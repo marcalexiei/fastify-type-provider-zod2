@@ -3,6 +3,10 @@
   "extends": ["./node_modules/@marcalexiei/biome-config/configs/base.json"],
   "overrides": [
     {
+      "includes": ["src/**"],
+      "plugins": ["./biome-plugins/ensures-zod-core-import.grit"]
+    },
+    {
       "includes": ["**/*.ts"],
       "linter": {
         "rules": {
