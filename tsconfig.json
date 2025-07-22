@@ -1,18 +1,37 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "moduleResolution": "node",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "declaration": true,
+    // Type Checking
     "strict": true,
-    "isolatedDeclarations": true
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "allowUnreachableCode": false,
+    "noImplicitThis": true,
+    "noImplicitOverride": true,
+
+    // Modules
+    "moduleResolution": "node",
+
+    // Emit
+    "declaration": true,
+
+    // Interop Constraints
+    "esModuleInterop": true,
+    "isolatedDeclarations": true,
+
+    // Language and Environment
+    "target": "ES2022",
+
+    // Completeness
+    "skipLibCheck": true
   },
   "exclude": [
     "./node_modules",
     "types/**/*.test-d.ts",
-    "test",
     "dist",
+    "coverage",
+
+    // they use directly exports default which is
+    // incompatible with isolatedDeclarations
     "vite.config.ts",
     "vitest.config.ts"
   ]

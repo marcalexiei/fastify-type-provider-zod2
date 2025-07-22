@@ -1,5 +1,5 @@
 import UnpluginIsolatedDecl from 'unplugin-isolated-decl/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
 
 export default defineConfig({
   build: {
@@ -24,5 +24,5 @@ export default defineConfig({
       ],
     },
   },
-  plugins: [UnpluginIsolatedDecl()],
+  plugins: [UnpluginIsolatedDecl() as Plugin],
 });

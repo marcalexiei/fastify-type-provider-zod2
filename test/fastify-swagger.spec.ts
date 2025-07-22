@@ -1,6 +1,7 @@
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import Fastify from 'fastify';
+// @ts-expect-error no types
 import * as validator from 'oas-validator';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';

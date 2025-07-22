@@ -240,14 +240,14 @@ describe('response schema', () => {
       app = Fastify();
       app.setValidatorCompiler(validatorCompiler);
 
-      function replacer(key: string, value: unknown) {
-        if (this[key] instanceof Date) {
-          return { _date: this[key].toISOString() };
-        }
-        return value;
-      }
-
-      const serializerCompiler = createSerializerCompiler({ replacer });
+      const serializerCompiler = createSerializerCompiler({
+        replacer: function replacer(key: string, value: unknown) {
+          if (this[key] instanceof Date) {
+            return { _date: this[key].toISOString() };
+          }
+          return value;
+        },
+      });
 
       app.setSerializerCompiler(serializerCompiler);
 
