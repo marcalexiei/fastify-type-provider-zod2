@@ -40,10 +40,7 @@ const getOverride = (
 
   // ToDo should be unnecessary after https://github.com/colinhacks/zod/pull/4811 is released
   // Transform anyOf with type: null to nullable: true
-  if (
-    ctx.jsonSchema.anyOf &&
-    ctx.jsonSchema.anyOf.some((s) => s.type === 'null')
-  ) {
+  if (ctx.jsonSchema.anyOf?.some((s) => s.type === 'null')) {
     ctx.jsonSchema.type = ctx.jsonSchema.anyOf.find(
       (s) => s.type !== 'null',
     )?.type;
@@ -117,7 +114,7 @@ export const zodSchemaToJson: (
      * @see jsonSchemaReplaceRef
      * @see https://github.com/colinhacks/zod/issues/4750
      */
-    uri: () => `__SCHEMA__PLACEHOLDER__`,
+    uri: () => '__SCHEMA__PLACEHOLDER__',
 
     override: (ctx) => getOverride(ctx, io),
   });

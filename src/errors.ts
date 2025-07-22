@@ -4,9 +4,7 @@ import type { FastifySchemaValidationError } from 'fastify/types/schema';
 import type { $ZodError } from 'zod/v4/core';
 
 export const InvalidSchemaError: FastifyErrorConstructor<
-  {
-    code: string;
-  },
+  { code: string },
   [string]
 > = createError<[string]>(
   'FST_ERR_INVALID_SCHEMA',
@@ -72,7 +70,7 @@ function isZodFastifySchemaValidationError(
 export function hasZodFastifySchemaValidationErrors(
   error: unknown,
 ): error is Omit<FastifyError, 'validation'> & {
-  validation: ZodFastifySchemaValidationError[];
+  validation: Array<ZodFastifySchemaValidationError>;
 } {
   return (
     typeof error === 'object' &&
@@ -86,7 +84,7 @@ export function hasZodFastifySchemaValidationErrors(
 
 function omit<T extends object, K extends keyof T>(
   obj: T,
-  keys: readonly K[],
+  keys: ReadonlyArray<K>,
 ): Omit<T, K> {
   const result = {} as Omit<T, K>;
   for (const key of Object.keys(obj) as Array<keyof T>) {
@@ -100,7 +98,7 @@ function omit<T extends object, K extends keyof T>(
 
 export function createValidationError(
   error: $ZodError,
-): ZodFastifySchemaValidationError[] {
+): Array<ZodFastifySchemaValidationError> {
   return error.issues.map((issue) => {
     return {
       [ZodFastifySchemaValidationErrorSymbol]: true,

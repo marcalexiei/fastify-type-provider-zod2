@@ -14,7 +14,7 @@ const error: unknown = {};
 if (hasZodFastifySchemaValidationErrors(error)) {
   expectAssignable<ZodFastifySchemaValidationError>(error.validation[0]);
 
-  error.validation.forEach((validationError) => {
+  for (const validationError of error.validation) {
     expectAssignable<ZodFastifySchemaValidationError>(validationError);
-  });
+  }
 }

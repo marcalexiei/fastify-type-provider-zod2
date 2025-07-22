@@ -1,4 +1,4 @@
-import type { Http2Server } from 'http2';
+import type { Http2Server } from 'node:http2';
 
 import type { FastifyPluginAsync, FastifyPluginCallback } from 'fastify';
 import Fastify from 'fastify';

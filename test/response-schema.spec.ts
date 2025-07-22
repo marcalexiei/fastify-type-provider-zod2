@@ -134,7 +134,8 @@ describe('response schema', () => {
             },
           },
           handler: (_req, res) => {
-            res.send({ name: 'test' } as any);
+            // @ts-expect-error need to test error
+            res.send({ name: 'test' });
           },
         });
       });
@@ -199,7 +200,8 @@ describe('response schema', () => {
             },
           },
           handler: (_req, res) => {
-            res.send('test' as any);
+            // @ts-expect-error passing string to a object schema to test errors
+            res.send('test');
           },
         });
       });
@@ -219,13 +221,13 @@ describe('response schema', () => {
       });
     });
 
-    // FixMe https://github.com/turkerdev/fastify-type-provider-zod/issues/16
-    it.skip('returns 500 for incorrect response', async () => {
-      const response = await app.inject().get('/incorrect');
+    // // FixMe https://github.com/turkerdev/fastify-type-provider-zod/issues/16
+    // it('returns 500 for incorrect response', async () => {
+    //   const response = await app.inject().get('/incorrect');
 
-      expect(response.statusCode).toBe(500);
-      expect(response.json()).toMatchInlineSnapshot();
-    });
+    //   expect(response.statusCode).toBe(500);
+    //   expect(response.json()).toMatchInlineSnapshot();
+    // });
   });
 
   describe('correctly replaces date in stringified response', () => {
@@ -238,7 +240,7 @@ describe('response schema', () => {
       app = Fastify();
       app.setValidatorCompiler(validatorCompiler);
 
-      function replacer(key: any, value: any) {
+      function replacer(key: string, value: unknown) {
         if (this[key] instanceof Date) {
           return { _date: this[key].toISOString() };
         }

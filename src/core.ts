@@ -23,8 +23,6 @@ import {
 } from './errors';
 import { zodRegistryToJson, zodSchemaToJson } from './zod-to-json';
 
-type FreeformRecord = Record<string, any>;
-
 const defaultSkipList = [
   '/documentation/',
   '/documentation/initOAuth',
@@ -45,7 +43,7 @@ interface Schema extends FastifySchema {
 }
 
 type CreateJsonSchemaTransformOptions = {
-  skipList?: readonly string[];
+  skipList?: ReadonlyArray<string>;
   schemaRegistry?: $ZodRegistry<{ id?: string | undefined }>;
 };
 
@@ -53,6 +51,7 @@ export const createJsonSchemaTransform = ({
   skipList = defaultSkipList,
   schemaRegistry = globalRegistry,
 }: CreateJsonSchemaTransformOptions): SwaggerTransform<Schema> => {
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: no other way
   return ({ schema, url }) => {
     if (!schema) {
       return {
@@ -64,14 +63,25 @@ export const createJsonSchemaTransform = ({
     const { response, headers, querystring, body, params, hide, ...rest } =
       schema;
 
-    const transformed: FreeformRecord = {};
+    const transformed: {
+      response?: Record<string, unknown>;
+      hide?: boolean;
+      [key: string]: unknown;
+    } = {};
 
     if (skipList.includes(url) || hide) {
       transformed.hide = true;
       return { schema: transformed, url };
     }
 
-    const zodSchemas: FreeformRecord = { headers, querystring, body, params };
+    type ZodSchemaRecord = Record<string, $ZodType>;
+
+    const zodSchemas = {
+      headers,
+      querystring,
+      body,
+      params,
+    } as ZodSchemaRecord;
 
     for (const prop in zodSchemas) {
       const zodSchema = zodSchemas[prop];
@@ -83,8 +93,8 @@ export const createJsonSchemaTransform = ({
     if (response) {
       transformed.response = {};
 
-      for (const prop in response as any) {
-        const zodSchema = resolveSchema((response as any)[prop]);
+      for (const prop in response) {
+        const zodSchema = resolveSchema((response as ZodSchemaRecord)[prop]);
 
         transformed.response[prop] = zodSchemaToJson(
           zodSchema,
@@ -177,6 +187,7 @@ function resolveSchema(
   throw new InvalidSchemaError(JSON.stringify(maybeSchema));
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: Same as json stringify
 type ReplacerFunction = (this: any, key: string, value: any) => any;
 
 export type ZodSerializerCompilerOptions = {

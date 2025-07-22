@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
 import UnpluginIsolatedDecl from 'unplugin-isolated-decl/vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   build: {
