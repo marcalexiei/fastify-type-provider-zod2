@@ -1,4 +1,4 @@
-# Fastify Type Provider Zod 2
+# `@marcalexiei/fastify-type-provider-zod`
 
 ##  Reason
 
@@ -12,7 +12,7 @@ If this change I'm more than willing to merge the changes here back to the upstr
 
 My contribution are getting missed: <https://github.com/turkerdev/fastify-type-provider-zod/pull/174#issuecomment-3023602822>
 
-Recent PRs not opened by me are reviewed before mines: <https://github.com/turkerdev/fastify-type-provider-zod/pull/176#issuecomment-3018610310>
+Recent PRs not opened by me are reviewed before mine: <https://github.com/turkerdev/fastify-type-provider-zod/pull/176#issuecomment-3018610310>
 
 This happened in the same way here:
 
@@ -32,11 +32,20 @@ Ignored issues:
 
 </details>
 
+## Differences from upstream
+
+1. Automated changelog using Changeset
+2. CI test also Windows
+3. Less `any` in the source code
+4. `oas-validator` (last release 4 years ago) replaced by `@seriousme/openapi-schema-validator`
+   (which supports 3.1)
+5. ...
+
 ## How to use?
 
 ```ts
-import type { ZodTypeProvider } from 'fastify-type-provider-zod';
-import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import type { ZodTypeProvider } from '@marcalexiei/fastify-type-provider-zod';
+import { serializerCompiler, validatorCompiler } from '@marcalexiei/fastify-type-provider-zod';
 import { z } from 'zod/v4';
 
 const app = Fastify();
@@ -75,7 +84,7 @@ type ZodSerializerCompilerOptions = {
 
 ```ts
 import Fastify from 'fastify';
-import { createSerializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
+import { createSerializerCompiler, validatorCompiler } from '@marcalexiei/fastify-type-provider-zod';
 
 const app = Fastify();
 
@@ -105,13 +114,13 @@ import fastify from 'fastify';
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from 'fastify-type-provider-zod';
+import type { ZodTypeProvider } from '@marcalexiei/fastify-type-provider-zod';
 import {
   jsonSchemaTransform,
   createJsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
-} from 'fastify-type-provider-zod';
+} from '@marcalexiei/fastify-type-provider-zod';
 
 const app = fastify();
 app.setValidatorCompiler(validatorCompiler);
@@ -173,7 +182,7 @@ run();
 You can add custom handling of request and response validation errors to your fastify error handler like this:
 
 ```ts
-import { hasZodFastifySchemaValidationErrors } from 'fastify-type-provider-zod';
+import { hasZodFastifySchemaValidationErrors } from '@marcalexiei/fastify-type-provider-zod';
 
 fastifyApp.setErrorHandler((err, req, reply) => {
   if (hasZodFastifySchemaValidationErrors(err)) {
@@ -217,13 +226,13 @@ import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import fastify from 'fastify';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from 'fastify-type-provider-zod';
+import type { ZodTypeProvider } from '@marcalexiei/fastify-type-provider-zod';
 import {
   jsonSchemaTransformObject,
   jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
-} from 'fastify-type-provider-zod';
+} from '@marcalexiei/fastify-type-provider-zod';
 
 const USER_SCHEMA = z.object({
   id: z.number().int().positive(),
@@ -285,7 +294,7 @@ run();
 
 ```ts
 import { z } from 'zod/v4';
-import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import type { FastifyPluginAsyncZod } from '@marcalexiei/fastify-type-provider-zod';
 
 const plugin: FastifyPluginAsyncZod = async function (fastify, _opts) {
   fastify.route({
@@ -306,3 +315,8 @@ const plugin: FastifyPluginAsyncZod = async function (fastify, _opts) {
   });
 };
 ```
+
+## Credits
+
+This project is built upon [turkerdev/fastify-type-provider-zod](https://github.com/turkerdev/fastify-type-provider-zod)
+and wouldn’t be possible without the work of turkerdev and the contributions of the entire community behind it.

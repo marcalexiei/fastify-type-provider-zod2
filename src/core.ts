@@ -220,7 +220,7 @@ export const serializerCompiler: ReturnType<typeof createSerializerCompiler> =
  *
  * @example
  * ```typescript
- * import { FastifyPluginCallbackZod } from "fastify-type-provider-zod"
+ * import { FastifyPluginCallbackZod } from "@marcalexiei/fastify-type-provider-zod"
  *
  * const plugin: FastifyPluginCallbackZod = (fastify, options, done) => {
  *   done()
@@ -237,7 +237,7 @@ export type FastifyPluginCallbackZod<
  *
  * @example
  * ```typescript
- * import { FastifyPluginAsyncZod } from "fastify-type-provider-zod"
+ * import { FastifyPluginAsyncZod } from "@marcalexiei/fastify-type-provider-zod"
  *
  * const plugin: FastifyPluginAsyncZod = async (fastify, options) => {
  * }

@@ -1,5 +1,5 @@
 {
-  "name": "fastify-type-provider-zod2",
+  "name": "@marcalexiei/fastify-type-provider-zod",
   "version": "0.0.1",
   "description": "Zod Type Provider for Fastify@5",
   "type": "module",
@@ -13,13 +13,13 @@
     "provider"
   ],
   "repository": {
-    "url": "https://github.com/marcalexiei/fastify-type-provider-zod2"
+    "url": "https://github.com/marcalexiei/fastify-type-provider-zod"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/marcalexiei/fastify-type-provider-zod2/issues"
+    "url": "https://github.com/marcalexiei/fastify-type-provider-zod/issues"
   },
-  "homepage": "https://github.com/marcalexiei/fastify-type-provider-zod2",
+  "homepage": "https://github.com/marcalexiei/fastify-type-provider-zod",
   "author": "turkerd",
   "maintainers": [
     "marcalexiei"

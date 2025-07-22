@@ -1,4 +1,4 @@
-import type { $ZodDate, JSONSchema } from 'zod/v4/core';
+import type { $ZodDate, $ZodUndefined, JSONSchema } from 'zod/v4/core';
 import { $ZodRegistry, $ZodType, toJSONSchema } from 'zod/v4/core';
 
 const getSchemaId = (id: string, io: 'input' | 'output') => {
@@ -11,6 +11,10 @@ const getReferenceUri = (id: string, io: 'input' | 'output') => {
 
 function isZodDate(entity: unknown): entity is $ZodDate {
   return entity instanceof $ZodType && entity._zod.def.type === 'date';
+}
+
+function isZodUndefined(entity: unknown): entity is $ZodUndefined {
+  return entity instanceof $ZodType && entity._zod.def.type === 'undefined';
 }
 
 const getOverride = (
@@ -27,7 +31,7 @@ const getOverride = (
       ctx.jsonSchema.format = 'date-time';
     }
 
-    if (ctx.zodSchema._zod.def.type === 'undefined') {
+    if (isZodUndefined(ctx.zodSchema)) {
       ctx.jsonSchema.type = 'null';
     }
   }
@@ -63,6 +67,8 @@ const deleteInvalidProperties: (
   return object;
 };
 
+const zodJSONSchemaTarget = 'draft-2020-12' as const;
+
 export const zodSchemaToJson: (
   zodSchema: $ZodType,
   registry: $ZodRegistry<{ id?: string }>,
@@ -95,6 +101,7 @@ export const zodSchemaToJson: (
   const {
     schemas: { [tempID]: result },
   } = toJSONSchema(tempRegistry, {
+    target: zodJSONSchemaTarget,
     metadata: registry,
     io,
     unrepresentable: 'any',
@@ -137,6 +144,7 @@ export const zodRegistryToJson: (
   io: 'input' | 'output',
 ) => Record<string, JSONSchema.BaseSchema> = (registry, io) => {
   const result = toJSONSchema(registry, {
+    target: zodJSONSchemaTarget,
     io,
     unrepresentable: 'any',
     cycles: 'ref',
