@@ -1,8 +1,6 @@
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
 import Fastify from 'fastify';
-// @ts-expect-error no types
-import * as validator from 'oas-validator';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
 
@@ -15,6 +13,8 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from '../src/core';
+
+import './_custom-openapi-schema-matchers';
 
 describe('transformer', () => {
   it('generates types for fastify-swagger correctly', async () => {
@@ -104,7 +104,7 @@ describe('transformer', () => {
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
     expect(openApiSpec).toMatchSnapshot();
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
   });
 
   it('should not generate ref', async () => {
@@ -153,7 +153,7 @@ describe('transformer', () => {
     const openApiSpecResponse = await app.inject().get('/documentation/json');
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
     expect(openApiSpec).toMatchSnapshot();
   });
 
@@ -208,7 +208,7 @@ describe('transformer', () => {
     const openApiSpecResponse = await app.inject().get('/documentation/json');
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
     expect(openApiSpec).toMatchSnapshot();
   });
 
@@ -265,7 +265,7 @@ describe('transformer', () => {
     z.globalRegistry.remove(TOKEN_SCHEMA);
 
     expect(openApiSpec).toMatchSnapshot();
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
   });
 
   it('should generate nested and circular refs correctly', async () => {
@@ -341,7 +341,7 @@ describe('transformer', () => {
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
     expect(openApiSpec).toMatchSnapshot();
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
   });
 
   it('should generate input and output schemas correctly', async () => {
@@ -398,7 +398,7 @@ describe('transformer', () => {
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
     expect(openApiSpec).toMatchSnapshot();
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
   });
 
   it('should generate referenced input and output schemas correctly', async () => {
@@ -465,7 +465,7 @@ describe('transformer', () => {
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
     expect(openApiSpec).toMatchSnapshot();
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
   });
 
   it('should generate referenced input and output schemas correctly when referencing a registered schema', async () => {
@@ -522,6 +522,6 @@ describe('transformer', () => {
     const openApiSpec = JSON.parse(openApiSpecResponse.body);
 
     expect(openApiSpec).toMatchSnapshot();
-    await validator.validate(openApiSpec, {});
+    await expect(openApiSpec).toBeValidOpenAPISchema();
   });
 });
