@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
 import type { ZodTypeProvider } from '../src/core';
 import { serializerCompiler, validatorCompiler } from '../src/core';
@@ -72,9 +72,10 @@ describe('response schema with custom error handler', () => {
     });
 
     await app.ready();
-  });
-  afterAll(async () => {
-    await app.close();
+
+    return async () => {
+      await app.close();
+    };
   });
 
   it('returns 400 and custom error on body validation error', async () => {
