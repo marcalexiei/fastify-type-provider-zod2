@@ -1,5 +1,9 @@
 import type { $ZodDate, $ZodUndefined, JSONSchema } from 'zod/v4/core';
 import { $ZodRegistry, $ZodType, toJSONSchema } from 'zod/v4/core';
+import {
+  convertSchemaToOpenAPISchemaVersion,
+  type OpenAPISchemaVersion,
+} from './openapi';
 
 const getSchemaId = (id: string, io: 'input' | 'output') => {
   return io === 'input' ? `${id}Input` : id;
@@ -35,36 +39,6 @@ const getOverride = (
       ctx.jsonSchema.type = 'null';
     }
   }
-
-  // ToDo should be unnecessary after https://github.com/colinhacks/zod/pull/4811 is released
-  // Remove propertyNames from record schemas
-  if (ctx.jsonSchema.propertyNames) {
-    delete ctx.jsonSchema.propertyNames;
-  }
-
-  // ToDo should be unnecessary after https://github.com/colinhacks/zod/pull/4811 is released
-  // Transform anyOf with type: null to nullable: true
-  if (ctx.jsonSchema.anyOf?.some((s) => s.type === 'null')) {
-    ctx.jsonSchema.type = ctx.jsonSchema.anyOf.find(
-      (s) => s.type !== 'null',
-    )?.type;
-    ctx.jsonSchema.nullable = true;
-    delete ctx.jsonSchema.anyOf;
-  }
-};
-
-const deleteInvalidProperties: (
-  schema: JSONSchema.BaseSchema,
-) => Omit<JSONSchema.BaseSchema, 'id' | '$schema'> = (schema) => {
-  const object = { ...schema };
-
-  delete object.id;
-  delete object.$schema;
-
-  // ToDo added in newer zod
-  delete object.$id;
-
-  return object;
 };
 
 const zodJSONSchemaTarget = 'draft-2020-12' as const;
@@ -73,7 +47,8 @@ export const zodSchemaToJson: (
   zodSchema: $ZodType,
   registry: $ZodRegistry<{ id?: string }>,
   io: 'input' | 'output',
-) => ReturnType<typeof deleteInvalidProperties> = (zodSchema, registry, io) => {
+  openAPIVersion: OpenAPISchemaVersion,
+) => JSONSchema.BaseSchema = (zodSchema, registry, io, openAPIVersion) => {
   const schemaRegistryEntry = registry.get(zodSchema);
 
   /**
@@ -126,23 +101,24 @@ export const zodSchemaToJson: (
     override: (ctx) => getOverride(ctx, io),
   });
 
-  const jsonSchema = deleteInvalidProperties(result);
-
   /**
    * Replace the previous generated placeholders with the final `$ref` value
    */
-  const jsonSchemaReplaceRef = JSON.stringify(jsonSchema).replaceAll(
+  const jsonSchemaReplaceRef = JSON.stringify(result).replaceAll(
     /"__SCHEMA__PLACEHOLDER__#\/\$defs\/(.+?)"/g,
     (_, id) => `"${getReferenceUri(id, io)}"`,
   );
 
-  return JSON.parse(jsonSchemaReplaceRef);
+  const jsonSchemaWithRef = JSON.parse(jsonSchemaReplaceRef);
+
+  return convertSchemaToOpenAPISchemaVersion(jsonSchemaWithRef, openAPIVersion);
 };
 
 export const zodRegistryToJson: (
   registry: $ZodRegistry<{ id?: string }>,
   io: 'input' | 'output',
-) => Record<string, JSONSchema.BaseSchema> = (registry, io) => {
+  openAPIVersion: OpenAPISchemaVersion,
+) => Record<string, JSONSchema.BaseSchema> = (registry, io, openAPIVersion) => {
   const result = toJSONSchema(registry, {
     target: zodJSONSchemaTarget,
     io,
@@ -156,7 +132,11 @@ export const zodRegistryToJson: (
   const jsonSchemas: Record<string, JSONSchema.BaseSchema> = {};
 
   for (const id in result) {
-    jsonSchemas[getSchemaId(id, io)] = deleteInvalidProperties(result[id]);
+    const { id: _, ...schemaV3 } = convertSchemaToOpenAPISchemaVersion(
+      result[id],
+      openAPIVersion,
+    );
+    jsonSchemas[getSchemaId(id, io)] = schemaV3;
   }
 
   return jsonSchemas;

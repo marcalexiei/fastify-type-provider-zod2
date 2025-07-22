@@ -21,6 +21,7 @@ import {
   InvalidSchemaError,
   ResponseSerializationError,
 } from './errors';
+import { getOpenAPISchemaVersion } from './openapi';
 import { zodRegistryToJson, zodSchemaToJson } from './zod-to-json';
 
 const defaultSkipList = [
@@ -52,7 +53,15 @@ export const createJsonSchemaTransform = ({
   schemaRegistry = globalRegistry,
 }: CreateJsonSchemaTransformOptions): SwaggerTransform<Schema> => {
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: no other way
-  return ({ schema, url }) => {
+  return (input) => {
+    if ('swaggerObject' in input) {
+      throw new Error(
+        'createJsonSchemaTransform - OpenAPI 2.0 is not supported',
+      );
+    }
+
+    const { schema, url } = input;
+
     if (!schema) {
       return {
         schema,
@@ -83,10 +92,17 @@ export const createJsonSchemaTransform = ({
       params,
     } as ZodSchemaRecord;
 
+    const openAPISchemaVersion = getOpenAPISchemaVersion(input);
+
     for (const prop in zodSchemas) {
       const zodSchema = zodSchemas[prop];
       if (zodSchema) {
-        transformed[prop] = zodSchemaToJson(zodSchema, schemaRegistry, 'input');
+        transformed[prop] = zodSchemaToJson(
+          zodSchema,
+          schemaRegistry,
+          'input',
+          openAPISchemaVersion,
+        );
       }
     }
 
@@ -100,6 +116,7 @@ export const createJsonSchemaTransform = ({
           zodSchema,
           schemaRegistry,
           'output',
+          openAPISchemaVersion,
         );
       }
     }
@@ -126,18 +143,29 @@ export const createJsonSchemaTransformObject =
   ({
     schemaRegistry = globalRegistry,
   }: CreateJsonSchemaTransformObjectOptions): SwaggerTransformObject =>
-  (input) => {
-    if ('swaggerObject' in input) {
-      console.warn(
-        'This package currently does not support component references for Swagger 2.0',
+  (documentObject) => {
+    /* v8 ignore next 5 */
+    if ('swaggerObject' in documentObject) {
+      throw new Error(
+        'createJsonSchemaTransformObject - OpenAPI 2.0 is not supported',
       );
-      return input.swaggerObject;
     }
 
-    const inputSchemas = zodRegistryToJson(schemaRegistry, 'input');
-    const outputSchemas = zodRegistryToJson(schemaRegistry, 'output');
+    const openAPISchemaVersion = getOpenAPISchemaVersion(documentObject);
+
+    const inputSchemas = zodRegistryToJson(
+      schemaRegistry,
+      'input',
+      openAPISchemaVersion,
+    );
+    const outputSchemas = zodRegistryToJson(
+      schemaRegistry,
+      'output',
+      openAPISchemaVersion,
+    );
 
     for (const key in outputSchemas) {
+      /* v8 ignore next 5 */
       if (inputSchemas[key]) {
         throw new Error(
           `Collision detected for schema "${key}". The is already an input schema with the same name.`,
@@ -146,11 +174,11 @@ export const createJsonSchemaTransformObject =
     }
 
     return {
-      ...input.openapiObject,
+      ...documentObject.openapiObject,
       components: {
-        ...input.openapiObject.components,
+        ...documentObject.openapiObject.components,
         schemas: {
-          ...input.openapiObject.components?.schemas,
+          ...documentObject.openapiObject.components?.schemas,
           ...inputSchemas,
           ...outputSchemas,
         },
@@ -178,26 +206,30 @@ function resolveSchema(
   if (maybeSchema instanceof $ZodType) {
     return maybeSchema;
   }
+
   if (
     'properties' in maybeSchema &&
     maybeSchema.properties instanceof $ZodType
   ) {
     return maybeSchema.properties;
   }
+
   throw new InvalidSchemaError(JSON.stringify(maybeSchema));
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: Same as json stringify
-type ReplacerFunction = (this: any, key: string, value: any) => any;
-
 export type ZodSerializerCompilerOptions = {
-  replacer?: ReplacerFunction;
+  // biome-ignore lint/suspicious/noExplicitAny: Same as json stringify
+  replacer?: (this: any, key: string, value: any) => any;
 };
 
-export const createSerializerCompiler =
-  (
-    options?: ZodSerializerCompilerOptions,
-  ): FastifySerializerCompiler<$ZodType | { properties: $ZodType }> =>
+type ZodFastifySerializerCompiler = FastifySerializerCompiler<
+  $ZodType | { properties: $ZodType }
+>;
+
+export const createSerializerCompiler: (
+  options?: ZodSerializerCompilerOptions,
+) => ZodFastifySerializerCompiler =
+  (options) =>
   ({ schema: maybeSchema, method, url }) =>
   (data) => {
     const schema = resolveSchema(maybeSchema);
@@ -212,8 +244,8 @@ export const createSerializerCompiler =
     return JSON.stringify(result.data, options?.replacer);
   };
 
-export const serializerCompiler: ReturnType<typeof createSerializerCompiler> =
-  createSerializerCompiler({});
+export const serializerCompiler: ZodFastifySerializerCompiler =
+  createSerializerCompiler();
 
 /**
  * FastifyPluginCallbackZod with Zod automatic type inference

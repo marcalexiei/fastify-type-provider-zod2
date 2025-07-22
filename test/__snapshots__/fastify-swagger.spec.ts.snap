@@ -34,6 +34,149 @@ exports[`transformer > generates types for fastify-swagger correctly 1`] = `
             "application/json": {
               "schema": {
                 "properties": {
+                  "code": {
+                    "maximum": 10000,
+                    "type": "number",
+                  },
+                  "password": {
+                    "maxLength": 32,
+                    "type": "string",
+                  },
+                  "seed": {
+                    "maximum": 1000,
+                    "minimum": 1,
+                    "type": "number",
+                  },
+                  "username": {
+                    "description": "someDescription",
+                    "maxLength": 32,
+                    "type": "string",
+                  },
+                },
+                "required": [
+                  "username",
+                  "seed",
+                  "code",
+                  "password",
+                ],
+                "type": "object",
+              },
+            },
+          },
+          "required": true,
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                },
+              },
+            },
+            "description": "Default Response",
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "required_role": {
+                      "enum": [
+                        "admin",
+                      ],
+                      "nullable": true,
+                      "type": "string",
+                    },
+                    "scopes": {
+                      "items": {
+                        "nullable": true,
+                        "oneOf": [
+                          {
+                            "enum": [
+                              "read",
+                            ],
+                            "type": "string",
+                          },
+                          {
+                            "enum": [
+                              "write",
+                            ],
+                            "type": "string",
+                          },
+                        ],
+                      },
+                      "maxItems": 3,
+                      "minItems": 3,
+                      "type": "array",
+                    },
+                  },
+                  "required": [
+                    "required_role",
+                    "scopes",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Default Response",
+          },
+        },
+        "summary": "login your account",
+        "tags": [
+          "auth",
+        ],
+      },
+    },
+    "/no-schema": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Default Response",
+          },
+        },
+      },
+    },
+  },
+  "servers": [],
+}
+`;
+
+exports[`transformer > generates types for fastify-swagger correctly 3.1 1`] = `
+{
+  "components": {
+    "schemas": {},
+  },
+  "info": {
+    "description": "Sample backend service",
+    "title": "SampleApi",
+    "version": "1.0.0",
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/delete": {
+      "delete": {
+        "description": "delete route",
+        "responses": {
+          "204": {
+            "description": "Empty response",
+          },
+        },
+      },
+    },
+    "/login": {
+      "post": {
+        "description": "login route",
+        "externalDocs": {
+          "description": "check google",
+          "url": "https://google.com",
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
                   "password": {
                     "maxLength": 32,
                     "type": "string",
@@ -103,6 +246,90 @@ exports[`transformer > generates types for fastify-swagger correctly 1`] = `
       "post": {
         "responses": {
           "200": {
+            "description": "Default Response",
+          },
+        },
+      },
+    },
+  },
+  "servers": [],
+}
+`;
+
+exports[`transformer > null type > should replace \`anyOf\` when it contains 2 elements: \`{ anyOf: [<null>, <non-null>]} s\` and one of them is \`"type": "null" with \`{...<non-null>, nullable: true }\` 1`] = `
+{
+  "components": {
+    "schemas": {},
+  },
+  "info": {
+    "description": "Sample backend service",
+    "title": "SampleApi",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                    {
+                      "enum": [
+                        "any",
+                      ],
+                      "type": "string",
+                    },
+                  ],
+                  "nullable": true,
+                },
+              },
+            },
+            "description": "Default Response",
+          },
+        },
+      },
+    },
+  },
+  "servers": [],
+}
+`;
+
+exports[`transformer > null type > should replace \`anyOf\` with \`"allOf": [...], "nullable": true\`  when schema contains only two elements and one is \`"type": "null"\` 1`] = `
+{
+  "components": {
+    "schemas": {},
+  },
+  "info": {
+    "description": "Sample backend service",
+    "title": "SampleApi",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/": {
+      "post": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "string",
+                  },
+                  "nullable": true,
+                  "type": "array",
+                },
+              },
+            },
             "description": "Default Response",
           },
         },

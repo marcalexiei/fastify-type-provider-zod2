@@ -39,7 +39,7 @@ Ignored issues:
 3. Less `any` in the source code
 4. `oas-validator` (last release 4 years ago) replaced by `@seriousme/openapi-schema-validator`
    (which supports 3.1)
-5. ...
+5. Using `swagger` object for OpenAPI standard throws an error instead of a warning
 
 ## How to use?
 
