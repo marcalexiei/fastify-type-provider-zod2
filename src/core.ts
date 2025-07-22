@@ -139,11 +139,12 @@ type CreateJsonSchemaTransformObjectOptions = {
   schemaRegistry?: $ZodRegistry<{ id?: string | undefined }>;
 };
 
-export const createJsonSchemaTransformObject =
-  ({
-    schemaRegistry = globalRegistry,
-  }: CreateJsonSchemaTransformObjectOptions): SwaggerTransformObject =>
-  (documentObject) => {
+export const createJsonSchemaTransformObject = (
+  options: CreateJsonSchemaTransformObjectOptions,
+): SwaggerTransformObject => {
+  const { schemaRegistry = globalRegistry } = options ?? {};
+
+  return (documentObject) => {
     /* v8 ignore next 5 */
     if ('swaggerObject' in documentObject) {
       throw new Error(
@@ -185,13 +186,15 @@ export const createJsonSchemaTransformObject =
       },
     } as ReturnType<SwaggerTransformObject>;
   };
+};
 
 export const jsonSchemaTransformObject: SwaggerTransformObject =
   createJsonSchemaTransformObject({});
 
-export const validatorCompiler: FastifySchemaCompiler<$ZodType> =
-  ({ schema: maybeSchema }) =>
-  (data) => {
+export const validatorCompiler: FastifySchemaCompiler<$ZodType> = ({
+  schema: maybeSchema,
+}) => {
+  return (data) => {
     const schema = resolveSchema(maybeSchema);
 
     const result = safeParse(schema, data);
@@ -201,6 +204,7 @@ export const validatorCompiler: FastifySchemaCompiler<$ZodType> =
 
     return { value: result.data };
   };
+};
 
 function resolveSchema(
   maybeSchema: $ZodType | { properties: $ZodType },
