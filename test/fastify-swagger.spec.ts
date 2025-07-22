@@ -103,7 +103,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     expect(openApiSpec).toMatchSnapshot();
     await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -194,7 +194,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     expect(openApiSpec).toMatchSnapshot();
     await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -282,7 +282,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     await expect(openApiSpec).toBeValidOpenAPISchema();
     expect(openApiSpec).toMatchSnapshot();
@@ -337,7 +337,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     await expect(openApiSpec).toBeValidOpenAPISchema();
     expect(openApiSpec).toMatchSnapshot();
@@ -391,7 +391,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     z.globalRegistry.remove(TOKEN_SCHEMA);
 
@@ -469,7 +469,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     expect(openApiSpec).toMatchSnapshot();
     await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -526,7 +526,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     expect(openApiSpec).toMatchSnapshot();
     await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -593,7 +593,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     expect(openApiSpec).toMatchSnapshot();
     await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -650,7 +650,7 @@ describe('transformer', () => {
     await app.ready();
 
     const openApiSpecResponse = await app.inject().get('/documentation/json');
-    const openApiSpec = JSON.parse(openApiSpecResponse.body);
+    const openApiSpec = openApiSpecResponse.json();
 
     expect(openApiSpec).toMatchSnapshot();
     await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -703,7 +703,7 @@ describe('transformer', () => {
       await app.ready();
 
       const openApiSpecResponse = await app.inject().get('/documentation/json');
-      const openApiSpec = JSON.parse(openApiSpecResponse.body);
+      const openApiSpec = openApiSpecResponse.json();
 
       expect(openApiSpec).toMatchSnapshot();
       await expect(openApiSpec).toBeValidOpenAPISchema();
@@ -741,7 +741,7 @@ describe('transformer', () => {
         const openApiSpecResponse = await app
           .inject()
           .get('/documentation/json');
-        const openApiSpec = JSON.parse(openApiSpecResponse.body);
+        const openApiSpec = openApiSpecResponse.json();
 
         expect(openApiSpec).toMatchSnapshot();
         await expect(openApiSpec).toBeValidOpenAPISchema();

@@ -14,7 +14,7 @@ export default defineConfig({
         {
           preserveModules: true,
           entryFileNames: 'cjs/[name].cjs',
-          format: 'commonjs',
+          format: 'cjs',
         },
         {
           preserveModules: true,
