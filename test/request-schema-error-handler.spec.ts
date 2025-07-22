@@ -1,21 +1,21 @@
-import type { FastifyInstance } from 'fastify'
-import Fastify from 'fastify'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { z } from 'zod/v4'
-import type { ZodTypeProvider } from '../src/core'
-import { serializerCompiler, validatorCompiler } from '../src/core'
-import { hasZodFastifySchemaValidationErrors } from '../src/errors'
+import type { FastifyInstance } from 'fastify';
+import Fastify from 'fastify';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { z } from 'zod/v4';
+import type { ZodTypeProvider } from '../src/core';
+import { serializerCompiler, validatorCompiler } from '../src/core';
+import { hasZodFastifySchemaValidationErrors } from '../src/errors';
 
 describe('response schema with custom error handler', () => {
-  let app: FastifyInstance
+  let app: FastifyInstance;
   beforeAll(async () => {
     const REQUEST_SCHEMA = z.object({
       name: z.string(),
-    })
+    });
 
-    app = Fastify()
-    app.setValidatorCompiler(validatorCompiler)
-    app.setSerializerCompiler(serializerCompiler)
+    app = Fastify();
+    app.setValidatorCompiler(validatorCompiler);
+    app.setSerializerCompiler(serializerCompiler);
 
     app.after(() => {
       app
@@ -29,7 +29,7 @@ describe('response schema with custom error handler', () => {
           handler: (req, res) => {
             res.send({
               name: req.body.name,
-            })
+            });
           },
         })
         .route({
@@ -41,7 +41,7 @@ describe('response schema with custom error handler', () => {
           handler: (req, res) => {
             res.send({
               name: req.query.name,
-            })
+            });
           },
         })
         .route({
@@ -51,10 +51,10 @@ describe('response schema with custom error handler', () => {
           handler: (_req, res) => {
             res.send({
               status: 'ok',
-            })
+            });
           },
-        })
-    })
+        });
+    });
     app.setErrorHandler((err, req, reply) => {
       if (hasZodFastifySchemaValidationErrors(err)) {
         return reply.code(400).send({
@@ -66,23 +66,23 @@ describe('response schema with custom error handler', () => {
             method: req.method,
             url: req.url,
           },
-        })
+        });
       }
-      throw err
-    })
+      throw err;
+    });
 
-    await app.ready()
-  })
+    await app.ready();
+  });
   afterAll(async () => {
-    await app.close()
-  })
+    await app.close();
+  });
 
   it('returns 400 and custom error on body validation error', async () => {
     const response = await app.inject().post('/').body({
       surname: 'dummy',
-    })
+    });
 
-    expect(response.statusCode).toBe(400)
+    expect(response.statusCode).toBe(400);
     expect(response.json()).toMatchInlineSnapshot(`
       {
         "details": {
@@ -104,6 +104,6 @@ describe('response schema with custom error handler', () => {
         "message": "Request doesn't match the schema",
         "statusCode": 400,
       }
-    `)
-  })
-})
+    `);
+  });
+});

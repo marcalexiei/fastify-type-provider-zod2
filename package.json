@@ -46,7 +46,7 @@
     "test": "pnpm run test:runtime && pnpm run test:types",
     "test:runtime": "vitest --coverage",
     "test:types": "pnpm run build && tsd",
-    "lint": "tsc --noEmit",
+    "lint": "biome check . && tsc --noEmit",
     "lint:fix": "biome check --write .",
     "release": "pnpm run build && changeset publish",
     "check-all": "pnpm run test && pnpm run lint"
@@ -63,6 +63,7 @@
     "@biomejs/biome": "^2.0.6",
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.3",
+    "@marcalexiei/biome-config": "1.1.0",
     "@types/node": "^22.16.0",
     "@vitest/coverage-v8": "^3.2.4",
     "fastify": "^5.4.0",

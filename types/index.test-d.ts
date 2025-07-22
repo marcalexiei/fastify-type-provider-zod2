@@ -1,9 +1,9 @@
 import type {
-    FastifyInstance,
-    FastifyLoggerInstance,
-    RawReplyDefaultExpression,
-    RawRequestDefaultExpression,
-    RawServerDefault,
+  FastifyInstance,
+  FastifyLoggerInstance,
+  RawReplyDefaultExpression,
+  RawRequestDefaultExpression,
+  RawServerDefault,
 } from 'fastify';
 import Fastify from 'fastify';
 import { expectAssignable, expectType } from 'tsd';
@@ -23,7 +23,9 @@ type FastifyZodInstance = FastifyInstance<
 >;
 
 expectType<FastifyZodInstance>(fastify.setValidatorCompiler(validatorCompiler));
-expectType<FastifyZodInstance>(fastify.setSerializerCompiler(serializerCompiler));
+expectType<FastifyZodInstance>(
+  fastify.setSerializerCompiler(serializerCompiler),
+);
 expectAssignable<FastifyZodInstance>(fastify);
 expectAssignable<FastifyInstance>(fastify);
 

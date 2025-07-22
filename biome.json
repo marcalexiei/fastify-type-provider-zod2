@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["./node_modules/@marcalexiei/biome-config/configs/base.json"],
+  "overrides": [
+    {
+      "includes": ["**/*.ts"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noBarrelFile": "off",
+            "noDelete": "off"
+          },
+          "suspicious": {
+            "noConsole": {
+              "level": "error",
+              "options": {
+                "allow": ["warn"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["./types/**/*.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedFunctionParameters": "off"
+          },
+          "suspicious": {
+            "useAwait": "off"
+          }
+        }
+      }
+    }
+  ]
+}

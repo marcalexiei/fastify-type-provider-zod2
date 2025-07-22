@@ -1,9 +1,14 @@
 import type { FastifySchemaValidationError } from 'fastify/types/schema';
 import { expectAssignable } from 'tsd';
 
-import { hasZodFastifySchemaValidationErrors, type ZodFastifySchemaValidationError } from '../src/errors';
+import {
+  hasZodFastifySchemaValidationErrors,
+  type ZodFastifySchemaValidationError,
+} from '../src/errors';
 
-expectAssignable<FastifySchemaValidationError>({} as ZodFastifySchemaValidationError);
+expectAssignable<FastifySchemaValidationError>(
+  {} as ZodFastifySchemaValidationError,
+);
 
 const error: unknown = {};
 if (hasZodFastifySchemaValidationErrors(error)) {
@@ -11,5 +16,5 @@ if (hasZodFastifySchemaValidationErrors(error)) {
 
   error.validation.forEach((validationError) => {
     expectAssignable<ZodFastifySchemaValidationError>(validationError);
-  })
+  });
 }

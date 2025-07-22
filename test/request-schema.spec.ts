@@ -1,20 +1,20 @@
-import type { FastifyInstance } from 'fastify'
-import Fastify from 'fastify'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { z } from 'zod/v4'
-import type { ZodTypeProvider } from '../src/core'
-import { serializerCompiler, validatorCompiler } from '../src/core'
+import type { FastifyInstance } from 'fastify';
+import Fastify from 'fastify';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { z } from 'zod/v4';
+import type { ZodTypeProvider } from '../src/core';
+import { serializerCompiler, validatorCompiler } from '../src/core';
 
 describe('response schema', () => {
-  let app: FastifyInstance
+  let app: FastifyInstance;
   beforeAll(async () => {
     const REQUEST_SCHEMA = z.object({
       name: z.string(),
-    })
+    });
 
-    app = Fastify()
-    app.setValidatorCompiler(validatorCompiler)
-    app.setSerializerCompiler(serializerCompiler)
+    app = Fastify();
+    app.setValidatorCompiler(validatorCompiler);
+    app.setSerializerCompiler(serializerCompiler);
 
     app.after(() => {
       app
@@ -28,7 +28,7 @@ describe('response schema', () => {
           handler: (req, res) => {
             res.send({
               name: req.body.name,
-            })
+            });
           },
         })
         .route({
@@ -40,7 +40,7 @@ describe('response schema', () => {
           handler: (req, res) => {
             res.send({
               name: req.query.name,
-            })
+            });
           },
         })
         .route({
@@ -50,41 +50,41 @@ describe('response schema', () => {
           handler: (_req, res) => {
             res.send({
               status: 'ok',
-            })
+            });
           },
-        })
-    })
+        });
+    });
 
-    await app.ready()
-  })
+    await app.ready();
+  });
   afterAll(async () => {
-    await app.close()
-  })
+    await app.close();
+  });
 
   it('accepts correct request', async () => {
     const response = await app.inject().get('/').query({
       name: 'test',
-    })
+    });
 
-    expect(response.statusCode).toBe(200)
+    expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual({
       name: 'test',
-    })
-  })
+    });
+  });
 
   it('accepts request on route without schema', async () => {
-    const response = await app.inject().get('/no-schema')
+    const response = await app.inject().get('/no-schema');
 
-    expect(response.statusCode).toBe(200)
+    expect(response.statusCode).toBe(200);
     expect(response.json()).toEqual({
       status: 'ok',
-    })
-  })
+    });
+  });
 
   it('returns 400 on querystring validation error', async () => {
-    const response = await app.inject().get('/')
+    const response = await app.inject().get('/');
 
-    expect(response.statusCode).toBe(400)
+    expect(response.statusCode).toBe(400);
     expect(response.json()).toMatchInlineSnapshot(`
       {
         "code": "FST_ERR_VALIDATION",
@@ -92,15 +92,15 @@ describe('response schema', () => {
         "message": "querystring/name Invalid input: expected string, received undefined",
         "statusCode": 400,
       }
-    `)
-  })
+    `);
+  });
 
   it('returns 400 on body validation error', async () => {
     const response = await app.inject().post('/').body({
       surname: 'dummy',
-    })
+    });
 
-    expect(response.statusCode).toBe(400)
+    expect(response.statusCode).toBe(400);
     expect(response.json()).toMatchInlineSnapshot(`
       {
         "code": "FST_ERR_VALIDATION",
@@ -108,13 +108,13 @@ describe('response schema', () => {
         "message": "body/name Invalid input: expected string, received undefined",
         "statusCode": 400,
       }
-    `)
-  })
+    `);
+  });
 
   it('returns 400 on empty body validation error', async () => {
-    const response = await app.inject().post('/')
+    const response = await app.inject().post('/');
 
-    expect(response.statusCode).toBe(400)
+    expect(response.statusCode).toBe(400);
     expect(response.json()).toMatchInlineSnapshot(`
       {
         "code": "FST_ERR_VALIDATION",
@@ -122,6 +122,6 @@ describe('response schema', () => {
         "message": "body/ Invalid input: expected object, received null",
         "statusCode": 400,
       }
-    `)
-  })
-})
+    `);
+  });
+});
