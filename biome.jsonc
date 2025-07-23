@@ -9,14 +9,6 @@
           "performance": {
             "noBarrelFile": "off",
             "noDelete": "off"
-          },
-          "suspicious": {
-            "noConsole": {
-              "level": "error",
-              "options": {
-                "allow": ["warn"]
-              }
-            }
           }
         }
       }
@@ -45,7 +37,7 @@
     },
     // ensure that in test files everything is imported from src/index
     {
-      "includes": ["./test/**/*.ts", "./types/**/*.ts"],
+      "includes": ["./test/**/*.ts", "./test-types/**/*.ts"],
       "linter": {
         "rules": {
           "style": {
@@ -65,7 +57,7 @@
       }
     },
     {
-      "includes": ["./types/**/*.ts"],
+      "includes": ["./test-types/**/*.ts"],
       "linter": {
         "rules": {
           "correctness": {

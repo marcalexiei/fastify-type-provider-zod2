@@ -22,14 +22,14 @@ export default defineConfig({
       {
         test: {
           name: 'runtime',
-          include: ['./test/**.spec.ts'],
+          dir: './test',
         },
       },
       // Creating separate project for typechecking because in the future I might add one project for each module resolution
       {
         test: {
           name: 'typecheck',
-          include: ['./types/*.test-d.ts'],
+          dir: './test-types',
           typecheck: {
             enabled: true,
             only: true,
