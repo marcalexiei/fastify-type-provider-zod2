@@ -4,7 +4,7 @@
 
 TL;DR; My contribution on the upstream repository are getting missed.
 
-If this change I'm more than willing to merge the changes here back to the upstream repo.
+If this changes, I'm more than willing to merge the changes here back to the upstream repo.
 
 <details>
 
@@ -27,15 +27,15 @@ Ignored PRs:
 
 Ignored issues:
 
-- <https://github.com/turkerdev/fastify-type-provider-zod/pull/181> - changelog request for 5.0.2
-- <https://github.com/turkerdev/fastify-type-provider-zod/pull/190>
+- <https://github.com/turkerdev/fastify-type-provider-zod/pull/181> - maintenance improvements
+- <https://github.com/turkerdev/fastify-type-provider-zod/pull/190> - changelog request for 5.0.2
 
 </details>
 
 ## Differences from upstream
 
 1. Automated changelog using Changeset
-2. CI test also Windows
+2. CI tests also Windows
 3. Less `any` in the source code
 4. `oas-validator` (last release 4 years ago) replaced by `@seriousme/openapi-schema-validator`
    (which supports 3.1)
