@@ -1,4 +1,14 @@
 {
+  "exclude": [
+    "./node_modules",
+    "dist",
+    "coverage",
+
+    // they use directly exports default which is
+    // incompatible with isolatedDeclarations
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
   "compilerOptions": {
     // Type Checking
     "strict": true,
@@ -23,16 +33,5 @@
 
     // Completeness
     "skipLibCheck": true
-  },
-  "exclude": [
-    "./node_modules",
-    "types/**/*.test-d.ts",
-    "dist",
-    "coverage",
-
-    // they use directly exports default which is
-    // incompatible with isolatedDeclarations
-    "vite.config.ts",
-    "vitest.config.ts"
-  ]
+  }
 }

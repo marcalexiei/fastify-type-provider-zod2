@@ -4,7 +4,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
 
-import type { ZodTypeProvider } from '../src/core';
+import type { ZodTypeProvider } from '../src/index';
 import {
   createJsonSchemaTransform,
   createJsonSchemaTransformObject,
@@ -12,7 +12,7 @@ import {
   jsonSchemaTransformObject,
   serializerCompiler,
   validatorCompiler,
-} from '../src/core';
+} from '../src/index';
 
 import './_custom-openapi-schema-matchers';
 

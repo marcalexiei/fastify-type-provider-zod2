@@ -1,47 +1,58 @@
 import type {
+  FastifyBaseLogger,
   FastifyInstance,
-  FastifyLoggerInstance,
   RawReplyDefaultExpression,
   RawRequestDefaultExpression,
   RawServerDefault,
 } from 'fastify';
 import Fastify from 'fastify';
-import { expectAssignable, expectType } from 'tsd';
+import { assertType, describe, expectTypeOf, it } from 'vitest';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from '../src/core';
-import { serializerCompiler, validatorCompiler } from '../src/core';
+import type { ZodTypeProvider } from '../src/index';
+import { serializerCompiler, validatorCompiler } from '../src/index';
 
-const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
+describe('index', () => {
+  it('FastifyZodInstance is compatible with FastifyInstance', () => {
+    const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
 
-type FastifyZodInstance = FastifyInstance<
-  RawServerDefault,
-  RawRequestDefaultExpression,
-  RawReplyDefaultExpression,
-  FastifyLoggerInstance,
-  ZodTypeProvider
->;
+    type FastifyZodInstance = FastifyInstance<
+      RawServerDefault,
+      RawRequestDefaultExpression,
+      RawReplyDefaultExpression,
+      FastifyBaseLogger,
+      ZodTypeProvider
+    >;
 
-expectType<FastifyZodInstance>(fastify.setValidatorCompiler(validatorCompiler));
-expectType<FastifyZodInstance>(
-  fastify.setSerializerCompiler(serializerCompiler),
-);
-expectAssignable<FastifyZodInstance>(fastify);
-expectAssignable<FastifyInstance>(fastify);
+    assertType<FastifyZodInstance>(
+      fastify.setValidatorCompiler(validatorCompiler),
+    );
+    assertType<FastifyZodInstance>(
+      fastify.setSerializerCompiler(serializerCompiler),
+    );
 
-fastify.route({
-  method: 'GET',
-  url: '/',
-  // Define your schema
-  schema: {
-    querystring: z.object({
-      name: z.string().min(4),
-    }),
-    response: {
-      200: z.string(),
-    },
-  },
-  handler: (req, res) => {
-    expectType<string>(req.query.name);
-    res.send('string');
-  },
+    expectTypeOf(fastify).toExtend<FastifyInstance>();
+    expectTypeOf(fastify).toExtend<FastifyZodInstance>();
+  });
+
+  it('should infer route types from zod schema', () => {
+    const fastify = Fastify().withTypeProvider<ZodTypeProvider>();
+
+    fastify.route({
+      method: 'GET',
+      url: '/',
+      // Define your schema
+      schema: {
+        querystring: z.object({
+          name: z.string().min(4),
+        }),
+        response: {
+          200: z.string(),
+        },
+      },
+      handler: (req, res) => {
+        expectTypeOf(req.query.name).toBeString();
+        res.send('string');
+      },
+    });
+  });
 });

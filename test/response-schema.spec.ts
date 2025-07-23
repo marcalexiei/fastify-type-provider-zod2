@@ -2,13 +2,13 @@ import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from '../src/core';
+import type { ZodTypeProvider } from '../src/index';
 import {
   createSerializerCompiler,
+  isResponseSerializationError,
   serializerCompiler,
   validatorCompiler,
-} from '../src/core';
-import { isResponseSerializationError } from '../src/errors';
+} from '../src/index';
 
 describe('response schema', () => {
   describe('does not fail on empty response schema (204)', () => {

@@ -40,12 +40,12 @@
   "files": [
     "dist"
   ],
-  "packageManager": "pnpm@10.12.4",
+  "packageManager": "pnpm@10.13.1",
   "scripts": {
     "build": "vite build",
-    "test": "pnpm run test:runtime && pnpm run test:types",
-    "test:runtime": "vitest --coverage",
-    "test:types": "pnpm run build && tsd",
+    "test": "vitest --coverage",
+    "test:runtime": "vitest --project runtime --coverage",
+    "test:types": "vitest --project typecheck",
     "lint": "biome check . && tsc --noEmit",
     "lint:fix": "biome check --write .",
     "release": "pnpm run build && changeset publish",
@@ -73,14 +73,10 @@
     "fastify": "^5.4.0",
     "fastify-plugin": "^5.0.1",
     "openapi-types": "12.1.3",
-    "tsd": "^0.32.0",
     "typescript": "^5.8.3",
     "unplugin-isolated-decl": "^0.14.5",
     "vite": "^6.3.5",
     "vitest": "^3.2.4",
     "zod": "^4.0.5"
-  },
-  "tsd": {
-    "directory": "types"
   }
 }
