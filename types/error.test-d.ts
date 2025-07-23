@@ -1,20 +1,30 @@
 import type { FastifySchemaValidationError } from 'fastify/types/schema';
-import { expectAssignable } from 'tsd';
+import { describe, expectTypeOf, it } from 'vitest';
 
 import {
   hasZodFastifySchemaValidationErrors,
   type ZodFastifySchemaValidationError,
-} from '../src/errors';
+} from '../src/index';
 
-expectAssignable<FastifySchemaValidationError>(
-  {} as ZodFastifySchemaValidationError,
-);
+describe('ZodFastifySchemaValidationError', () => {
+  it('should be assignable to FastifySchemaValidationError', () => {
+    expectTypeOf<ZodFastifySchemaValidationError>().toExtend<FastifySchemaValidationError>();
+  });
 
-const error: unknown = {};
-if (hasZodFastifySchemaValidationErrors(error)) {
-  expectAssignable<ZodFastifySchemaValidationError>(error.validation[0]);
+  describe('hasZodFastifySchemaValidationErrors', () => {
+    it('should narrow type to ZodFastifySchemaValidationError', () => {
+      const error: unknown = {};
+      if (hasZodFastifySchemaValidationErrors(error)) {
+        expectTypeOf<ZodFastifySchemaValidationError>().toEqualTypeOf(
+          error.validation[0],
+        );
 
-  for (const validationError of error.validation) {
-    expectAssignable<ZodFastifySchemaValidationError>(validationError);
-  }
-}
+        for (const validationError of error.validation) {
+          expectTypeOf<ZodFastifySchemaValidationError>().toEqualTypeOf(
+            validationError,
+          );
+        }
+      }
+    });
+  });
+});

@@ -8,7 +8,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.ts'],
-      exclude: ['test/**/*.ts', 'src/index.ts'],
+      exclude: ['test/**/*.ts'],
       reporter: ['text', 'lcov'],
       all: true,
       thresholds: {
@@ -18,5 +18,25 @@ export default defineConfig({
         lines: 94,
       },
     },
+    projects: [
+      {
+        test: {
+          name: 'runtime',
+          include: ['./test/**.spec.ts'],
+        },
+      },
+      // Creating separate project for typechecking because in the future I might add one project for each module resolution
+      {
+        test: {
+          name: 'typecheck',
+          include: ['./types/*.test-d.ts'],
+          typecheck: {
+            enabled: true,
+            only: true,
+            tsconfig: './tsconfig.test.json',
+          },
+        },
+      },
+    ],
   },
 });

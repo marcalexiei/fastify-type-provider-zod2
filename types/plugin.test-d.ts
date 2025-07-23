@@ -1,115 +1,119 @@
 import type { Http2Server } from 'node:http2';
-
 import type { FastifyPluginAsync, FastifyPluginCallback } from 'fastify';
 import Fastify from 'fastify';
 import fp from 'fastify-plugin';
-import { expectType } from 'tsd';
-import { z } from 'zod/v4';
-
+import { assertType, describe, it } from 'vitest';
+import z from 'zod/v4';
 import type {
   FastifyPluginAsyncZod,
   FastifyPluginCallbackZod,
-} from '../src/core';
+} from '../src/index';
 
-// Ensure the defaults of FastifyPluginAsyncZod are the same as FastifyPluginAsync
-export const pluginAsyncDefaults: FastifyPluginAsync = async (
-  fastify,
-  options,
-) => {
-  const pluginAsyncZodDefaults: FastifyPluginAsyncZod = async (
-    fastifyWithZod,
-    optionsZod,
-  ) => {
-    expectType<(typeof fastifyWithZod)['server']>(fastify.server);
-    expectType<typeof optionsZod>(options);
-  };
-  fastify.register(pluginAsyncZodDefaults);
-};
+describe('plugin', () => {
+  it('ensure the defaults of FastifyPluginAsyncZod are the same as FastifyPluginAsync', () => {
+    assertType<FastifyPluginAsync>(async (fastify, options) => {
+      const pluginAsyncZodDefaults: FastifyPluginAsyncZod = async (
+        fastifyWithZod,
+        optionsZod,
+      ) => {
+        assertType<(typeof fastifyWithZod)['server']>(fastify.server);
+        assertType<typeof optionsZod>(options);
+      };
+      fastify.register(pluginAsyncZodDefaults);
+    });
+  });
 
-// Ensure the defaults of FastifyPluginAsyncZod are the same as FastifyPluginCallback
-export const pluginCallbackDefaults: FastifyPluginCallback = async (
-  fastify,
-  options,
-) => {
-  const pluginCallbackZodDefaults: FastifyPluginAsyncZod = async (
-    fastifyWithZod,
-    optionsZod,
-  ) => {
-    expectType<(typeof fastifyWithZod)['server']>(fastify.server);
-    expectType<typeof optionsZod>(options);
-  };
+  it('Ensure the defaults of FastifyPluginAsyncZod are the same as FastifyPluginCallback', () => {
+    assertType<FastifyPluginCallback>(async (fastify, options) => {
+      const pluginCallbackZodDefaults: FastifyPluginAsyncZod = async (
+        fastifyWithZod,
+        optionsZod,
+      ) => {
+        assertType<(typeof fastifyWithZod)['server']>(fastify.server);
+        assertType<typeof optionsZod>(options);
+      };
 
-  fastify.register(pluginCallbackZodDefaults);
-};
+      fastify.register(pluginCallbackZodDefaults);
+    });
+  });
 
-const asyncPlugin: FastifyPluginAsyncZod<
-  { optionA: string },
-  Http2Server
-> = async (fastify, options) => {
-  expectType<Http2Server>(fastify.server);
+  it('FastifyPluginAsyncZod should provide correct types when providing generics', () => {
+    const fastify = Fastify();
+    const asyncPlugin: FastifyPluginAsyncZod<
+      { optionA: string },
+      Http2Server
+    > = async (fastify, options) => {
+      assertType<Http2Server>(fastify.server);
 
-  expectType<string>(options.optionA);
+      assertType<string>(options.optionA);
 
-  fastify.get(
-    '/',
-    {
-      schema: {
-        body: z.object({
-          x: z.string(),
-          y: z.number(),
-          z: z.boolean(),
-        }),
-      },
-    },
-    (req) => {
-      expectType<boolean>(req.body.z);
-      expectType<number>(req.body.y);
-      expectType<string>(req.body.x);
-    },
-  );
-};
+      fastify.get(
+        '/',
+        {
+          schema: {
+            body: z.object({
+              x: z.string(),
+              y: z.number(),
+              z: z.boolean(),
+            }),
+          },
+        },
+        (req) => {
+          assertType<boolean>(req.body.z);
+          assertType<number>(req.body.y);
+          assertType<string>(req.body.x);
+        },
+      );
+    };
+    fastify.register(asyncPlugin, { optionA: 'test' });
+    fp(asyncPlugin);
+  });
 
-const callbackPlugin: FastifyPluginCallbackZod<
-  { optionA: string },
-  Http2Server
-> = (fastify, options, done) => {
-  expectType<Http2Server>(fastify.server);
+  it('FastifyPluginCallbackZod should provide correct types when providing generics', () => {
+    const fastify = Fastify();
 
-  expectType<string>(options.optionA);
+    const callbackPlugin: FastifyPluginCallbackZod<
+      { optionA: string },
+      Http2Server
+    > = (fastify, options, done) => {
+      assertType<Http2Server>(fastify.server);
 
-  fastify.get(
-    '/',
-    {
-      schema: {
-        body: z.object({
-          x: z.string(),
-          y: z.number(),
-          z: z.boolean(),
-        }),
-      },
-    },
-    (req) => {
-      expectType<boolean>(req.body.z);
-      expectType<number>(req.body.y);
-      expectType<string>(req.body.x);
-    },
-  );
-  done();
-};
+      assertType<string>(options.optionA);
 
-const fastify = Fastify();
+      fastify.get(
+        '/',
+        {
+          schema: {
+            body: z.object({
+              x: z.string(),
+              y: z.number(),
+              z: z.boolean(),
+            }),
+          },
+        },
+        (req) => {
+          assertType<boolean>(req.body.z);
+          assertType<number>(req.body.y);
+          assertType<string>(req.body.x);
+        },
+      );
+      done();
+    };
 
-fastify.register(asyncPlugin, { optionA: 'test' });
-fastify.register(callbackPlugin, { optionA: 'test' });
+    fastify.register(callbackPlugin, { optionA: 'test' });
 
-const asyncPluginHttpDefault: FastifyPluginAsyncZod<{
-  optionA: string;
-}> = async (fastify, options) => {
-  expectType<(typeof fastify)['server']>(fastify.server);
-  expectType<typeof options>(options);
-  expectType<{ optionA: string }>(options);
-};
+    fp(callbackPlugin);
+  });
 
-fp(asyncPlugin);
-fp(callbackPlugin);
-fp(asyncPluginHttpDefault);
+  it('FastifyPluginAsyncZod should provide correct types when using default http server', () => {
+    const asyncPluginHttpDefault: FastifyPluginAsyncZod<{
+      optionA: string;
+    }> = async (fastify, options) => {
+      assertType<(typeof fastify)['server']>(fastify.server);
+      assertType<typeof options>(options);
+      assertType<{ optionA: string }>(options);
+    };
+
+    fp(asyncPluginHttpDefault);
+  });
+});

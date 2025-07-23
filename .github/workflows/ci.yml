@@ -31,6 +31,7 @@ jobs:
 
   test:
     name: Test Node ${{ matrix.node-version }} on ${{ matrix.os }}
+    timeout-minutes: 5
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -46,8 +47,11 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Run build
+        run: pnpm run build
+
       - name: Run tests
-        run: npm run test
+        run: pnpm run test
 
   ci-ok:
     name: CI OK
