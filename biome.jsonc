@@ -1,0 +1,81 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["./node_modules/@marcalexiei/biome-config/configs/base.json"],
+  "overrides": [
+    {
+      "includes": ["**/*.ts"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "noBarrelFile": "off",
+            "noDelete": "off"
+          },
+          "suspicious": {
+            "noConsole": {
+              "level": "error",
+              "options": {
+                "allow": ["warn"]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["src/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            // Ensures that only `zod/v4/core` is imported.
+            // https://zod.dev/library-authors?id=how-to-support-zod-and-zod-mini-simultaneously
+            // > Your library code should only import from "zod/v4/core".
+            // > This sub-package defines the interfaces, classes, and utilities that are shared between zod/v4 and zod/v4-mini.
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "zod": "This plugins supports both `zod` and `zod-mini`, so please import only from `zod/v4/core`",
+                  "zod/v4": "This plugins supports both `zod` and `zod-mini`, so please import only from `zod/v4/core`"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    // ensure that in test files everything is imported from src/index
+    {
+      "includes": ["./test/**/*.ts", "./types/**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "../src/core": "import only from `../src/index`",
+                  "../src/errors": "import only from `../src/index`",
+                  "../src/openapi": "import only from `../src/index`",
+                  "../src/zod-to-json": "import only from `../src/index`"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["./types/**/*.ts"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noUnusedFunctionParameters": "off"
+          },
+          "suspicious": {
+            "useAwait": "off"
+          }
+        }
+      }
+    }
+  ]
+}
