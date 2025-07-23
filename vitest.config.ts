@@ -7,15 +7,13 @@ export default defineConfig({
     reporters: ['verbose'],
     coverage: {
       provider: 'v8',
-      include: ['src/**/*.ts'],
-      exclude: ['test/**/*.ts'],
-      reporter: ['text', 'lcov'],
       all: true,
+      reporter: ['text', 'lcov'],
       thresholds: {
-        statements: 94,
-        branches: 90,
-        functions: 91,
-        lines: 94,
+        statements: 95,
+        branches: 95,
+        functions: 95,
+        lines: 95,
       },
     },
     projects: [
