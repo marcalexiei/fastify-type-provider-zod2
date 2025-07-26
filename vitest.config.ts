@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+import { defineConfig, type TestProjectConfiguration } from 'vitest/config';
 
 export default defineConfig({
   test: {
@@ -24,17 +24,26 @@ export default defineConfig({
         },
       },
       // Creating separate project for typechecking because in the future I might add one project for each module resolution
-      {
+      ...(
+        [
+          ['tsconfig.bundler.json', 'green'],
+          ['tsconfig.node.json', 'magenta'],
+          // ['tsconfig.node16.json','cyan'],
+        ] as const
+      ).map<TestProjectConfiguration>(([it, color]) => ({
         test: {
-          name: 'typecheck',
+          name: {
+            label: `typecheck ${it.split('.')[1]}`,
+            color,
+          },
           dir: './test-types',
           typecheck: {
             enabled: true,
             only: true,
-            tsconfig: './tsconfig.test.json',
+            tsconfig: `./test-types/${it}`,
           },
         },
-      },
+      })),
     ],
   },
 });
