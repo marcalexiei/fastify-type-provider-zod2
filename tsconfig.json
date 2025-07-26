@@ -23,10 +23,12 @@
 
     // Emit
     "declaration": true,
+    "noEmit": true,
 
     // Interop Constraints
     "esModuleInterop": true,
     "isolatedDeclarations": true,
+    "allowImportingTsExtensions": true,
 
     // Language and Environment
     "target": "ES2022",

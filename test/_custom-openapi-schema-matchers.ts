@@ -20,7 +20,7 @@ expect.extend({
   async toBeValidOpenAPISchema(
     this: { isNot: boolean },
     openAPISpecs: Record<string, unknown>,
-  ) {
+  ): Promise<{ pass: boolean; message: () => string }> {
     const res = await validator.validate(openAPISpecs);
 
     const messages = [

@@ -76,7 +76,7 @@ describe('response schema with custom error handler', () => {
 
     await app.ready();
 
-    return async () => {
+    return async (): Promise<void> => {
       await app.close();
     };
   });

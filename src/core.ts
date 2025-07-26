@@ -53,14 +53,14 @@ export const createJsonSchemaTransform = ({
   schemaRegistry = globalRegistry,
 }: CreateJsonSchemaTransformOptions): SwaggerTransform<Schema> => {
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: no other way
-  return (input) => {
-    if ('swaggerObject' in input) {
+  return (transformData) => {
+    if ('swaggerObject' in transformData) {
       throw new Error(
         'createJsonSchemaTransform - OpenAPI 2.0 is not supported',
       );
     }
 
-    const { schema, url } = input;
+    const { schema, url } = transformData;
 
     if (!schema) {
       return {
@@ -92,7 +92,7 @@ export const createJsonSchemaTransform = ({
       params,
     } as ZodSchemaRecord;
 
-    const openAPISchemaVersion = getOpenAPISchemaVersion(input);
+    const openAPISchemaVersion = getOpenAPISchemaVersion(transformData);
 
     for (const prop in zodSchemas) {
       const zodSchema = zodSchemas[prop];

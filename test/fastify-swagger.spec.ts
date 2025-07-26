@@ -3,8 +3,7 @@ import fastifySwaggerUI from '@fastify/swagger-ui';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
-
-import type { ZodTypeProvider } from '../src/index';
+import type { ZodTypeProvider } from '../src/index.ts';
 import {
   createJsonSchemaTransform,
   createJsonSchemaTransformObject,
@@ -12,9 +11,9 @@ import {
   jsonSchemaTransformObject,
   serializerCompiler,
   validatorCompiler,
-} from '../src/index';
+} from '../src/index.ts';
 
-import './_custom-openapi-schema-matchers';
+import './_custom-openapi-schema-matchers.ts';
 
 describe('transformer', () => {
   it('generates types for fastify-swagger correctly', async () => {
@@ -41,7 +40,7 @@ describe('transformer', () => {
     const LOGIN_SCHEMA = z.object({
       username: z.string().max(32).describe('someDescription'),
       seed: z.number().min(1).max(1000),
-      code: z.number().lt(10000),
+      code: z.number().lt(10_000),
       password: z.string().max(32),
     });
 

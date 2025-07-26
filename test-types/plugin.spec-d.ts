@@ -42,12 +42,12 @@ describe('plugin', () => {
     const asyncPlugin: FastifyPluginAsyncZod<
       { optionA: string },
       Http2Server
-    > = async (fastify, options) => {
-      assertType<Http2Server>(fastify.server);
+    > = async (_fastify, options) => {
+      assertType<Http2Server>(_fastify.server);
 
       assertType<string>(options.optionA);
 
-      fastify.get(
+      _fastify.get(
         '/',
         {
           schema: {
@@ -75,12 +75,12 @@ describe('plugin', () => {
     const callbackPlugin: FastifyPluginCallbackZod<
       { optionA: string },
       Http2Server
-    > = (fastify, options, done) => {
-      assertType<Http2Server>(fastify.server);
+    > = (_fastify, options, done) => {
+      assertType<Http2Server>(_fastify.server);
 
       assertType<string>(options.optionA);
 
-      fastify.get(
+      _fastify.get(
         '/',
         {
           schema: {

@@ -27,7 +27,9 @@ export const convertSchemaToOpenAPISchemaVersion = (
   openAPISchemaVersion: OpenAPISchemaVersion,
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: life is bitter :(
 ): JSONSchema.BaseSchema => {
-  if (openAPISchemaVersion === '3.1') return jsonSchema;
+  if (openAPISchemaVersion === '3.1') {
+    return jsonSchema;
+  }
 
   const clone = { ...jsonSchema };
 

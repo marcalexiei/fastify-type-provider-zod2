@@ -215,7 +215,7 @@ describe('response schema', () => {
 
       await app.ready();
 
-      return async () => {
+      return async (): Promise<void> => {
         await app.close();
       };
     });
@@ -248,8 +248,8 @@ describe('response schema', () => {
       app = Fastify();
       app.setValidatorCompiler(validatorCompiler);
 
-      const serializerCompiler = createSerializerCompiler({
-        replacer: function replacer(key: string, value: unknown) {
+      const serializerCompilerCustom = createSerializerCompiler({
+        replacer(key: string, value: unknown): unknown {
           if (this[key] instanceof Date) {
             return { _date: this[key].toISOString() };
           }
@@ -257,7 +257,7 @@ describe('response schema', () => {
         },
       });
 
-      app.setSerializerCompiler(serializerCompiler);
+      app.setSerializerCompiler(serializerCompilerCustom);
 
       app.after(() => {
         app.withTypeProvider<ZodTypeProvider>().route({
