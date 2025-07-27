@@ -55,7 +55,7 @@ Ignored issues:
    (which supports 3.1)
 5. Using `swagger` object for OpenAPI standard throws an error instead of a warning
 6. Uses `vitest` typechecking rather than `tsd`
-7. Type test are run on node, node16, bundler module resolutions
+7. Type tests are run on `node`, `node16`, `bundler` module resolutions
 
 ## How to use?
 

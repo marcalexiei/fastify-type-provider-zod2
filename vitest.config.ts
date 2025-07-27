@@ -28,7 +28,7 @@ export default defineConfig({
         [
           ['tsconfig.bundler.json', 'green'],
           ['tsconfig.node.json', 'magenta'],
-          // ['tsconfig.node16.json','cyan'],
+          ['tsconfig.node16.json', 'cyan'],
         ] as const
       ).map<TestProjectConfiguration>(([it, color]) => ({
         test: {

@@ -2,12 +2,12 @@ import type { FastifyInstance } from 'fastify';
 import Fastify from 'fastify';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from '../src/index';
+import type { ZodTypeProvider } from '../src/index.ts';
 import {
   hasZodFastifySchemaValidationErrors,
   serializerCompiler,
   validatorCompiler,
-} from '../src/index';
+} from '../src/index.ts';
 
 describe('response schema with custom error handler', () => {
   let app: FastifyInstance;
