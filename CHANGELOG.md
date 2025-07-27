@@ -1,5 +1,11 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.0.1
+
+### Patch Changes
+
+- [#10](https://github.com/marcalexiei/fastify-type-provider-zod/pull/10) [`9f01742`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/9f017426e8814ae05fcb293b16eb4acdf5e9ca31) Thanks [@marcalexiei](https://github.com/marcalexiei)! - fix(types): add file extensions to avoid node16 resolution errors
+
 ## 1.0.0
 
 ### Major Changes
