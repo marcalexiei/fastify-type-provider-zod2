@@ -4,11 +4,6 @@
   "linter": {
     "domains": {
       "project": "all"
-    },
-    "rules": {
-      "correctness": {
-        "useImportExtensions": "off"
-      }
     }
   },
   "overrides": [

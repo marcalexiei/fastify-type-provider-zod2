@@ -8,8 +8,8 @@ import type {
 import Fastify from 'fastify';
 import { assertType, describe, expectTypeOf, it } from 'vitest';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from '../src/index';
-import { serializerCompiler, validatorCompiler } from '../src/index';
+import type { ZodTypeProvider } from '../src/index.ts';
+import { serializerCompiler, validatorCompiler } from '../src/index.ts';
 
 describe('index', () => {
   it('FastifyZodInstance is compatible with FastifyInstance', () => {

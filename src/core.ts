@@ -12,7 +12,8 @@ import type {
   RawServerBase,
   RawServerDefault,
 } from 'fastify';
-import type { FastifySerializerCompiler } from 'fastify/types/schema';
+// When https://github.com/fastify/fastify/pull/6207 is released when can import from fastify
+import type { FastifySerializerCompiler } from 'fastify/types/schema.js';
 import type { $ZodRegistry, input, output } from 'zod/v4/core';
 import { $ZodType, globalRegistry, safeParse } from 'zod/v4/core';
 
@@ -20,9 +21,9 @@ import {
   createValidationError,
   InvalidSchemaError,
   ResponseSerializationError,
-} from './errors';
-import { getOpenAPISchemaVersion } from './openapi';
-import { zodRegistryToJson, zodSchemaToJson } from './zod-to-json';
+} from './errors.ts';
+import { getOpenAPISchemaVersion } from './openapi.ts';
+import { zodRegistryToJson, zodSchemaToJson } from './zod-to-json.ts';
 
 const defaultSkipList = [
   '/documentation/',

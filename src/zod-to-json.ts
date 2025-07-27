@@ -3,7 +3,7 @@ import { $ZodRegistry, $ZodType, toJSONSchema } from 'zod/v4/core';
 import {
   convertSchemaToOpenAPISchemaVersion,
   type OpenAPISchemaVersion,
-} from './openapi';
+} from './openapi.ts';
 
 const getSchemaId = (id: string, io: 'input' | 'output') => {
   return io === 'input' ? `${id}Input` : id;

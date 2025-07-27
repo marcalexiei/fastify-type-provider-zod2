@@ -7,7 +7,7 @@ import z from 'zod/v4';
 import type {
   FastifyPluginAsyncZod,
   FastifyPluginCallbackZod,
-} from '../src/index';
+} from '../src/index.ts';
 
 describe('plugin', () => {
   it('ensure the defaults of FastifyPluginAsyncZod are the same as FastifyPluginAsync', () => {
