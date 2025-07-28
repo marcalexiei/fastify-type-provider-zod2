@@ -29,6 +29,26 @@ jobs:
       - name: Format
         run: pnpm run lint
 
+  check-documentation:
+    name: Documentation build
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Lint
+        run: | 
+          pnpm run build
+          pnpm run docs:lint
+
+      - name: Build
+        run: pnpm run docs:build
+
   test:
     name: Test Node ${{ matrix.node-version }} on ${{ matrix.os }}
     timeout-minutes: 5
@@ -60,6 +80,7 @@ jobs:
     if: always()
     needs:
       - check
+      - check-documentation
       - test
     steps:
       - name: Exit with error if some jobs are not successful

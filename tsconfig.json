@@ -3,6 +3,7 @@
     "./node_modules",
     "dist",
     "coverage",
+    "examples",
 
     // they use directly exports default which is
     // incompatible with isolatedDeclarations
