@@ -49,7 +49,7 @@ jobs:
           NPM_CONFIG_PROVENANCE: true
 
   documentation-build:
-    name: 'deploy'
+    name: Documentation build
     runs-on: ubuntu-latest
     needs:
       - release
@@ -74,7 +74,7 @@ jobs:
           path: docs/.vitepress/dist
 
   documentation-deploy:
-    name: Deploy
+    name: Documentation deploy
     runs-on: ubuntu-latest
     timeout-minutes: 5
     needs:
