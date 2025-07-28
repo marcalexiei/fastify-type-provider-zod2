@@ -224,10 +224,13 @@ function resolveSchema(
   throw new InvalidSchemaError(JSON.stringify(maybeSchema));
 }
 
+// biome-ignore-start lint/suspicious/noExplicitAny: Same as json stringify
+// #region ZodSerializerCompilerOptions
 export type ZodSerializerCompilerOptions = {
-  // biome-ignore lint/suspicious/noExplicitAny: Same as json stringify
   replacer?: (this: any, key: string, value: any) => any;
 };
+// #endregion ZodSerializerCompilerOptions
+// biome-ignore-end lint/suspicious/noExplicitAny: Same as json stringify
 
 type ZodFastifySerializerCompiler = FastifySerializerCompiler<
   $ZodType | { properties: $ZodType }
@@ -235,21 +238,22 @@ type ZodFastifySerializerCompiler = FastifySerializerCompiler<
 
 export const createSerializerCompiler: (
   options?: ZodSerializerCompilerOptions,
-) => ZodFastifySerializerCompiler =
-  (options) =>
-  ({ schema: maybeSchema, method, url }) =>
-  (data) => {
-    const schema = resolveSchema(maybeSchema);
+) => ZodFastifySerializerCompiler = (options) => {
+  return ({ schema: maybeSchema, method, url }) => {
+    return (data) => {
+      const schema = resolveSchema(maybeSchema);
 
-    const result = safeParse(schema, data);
-    if (result.error) {
-      throw new ResponseSerializationError(method, url, {
-        cause: result.error,
-      });
-    }
+      const result = safeParse(schema, data);
+      if (result.error) {
+        throw new ResponseSerializationError(method, url, {
+          cause: result.error,
+        });
+      }
 
-    return JSON.stringify(result.data, options?.replacer);
+      return JSON.stringify(result.data, options?.replacer);
+    };
   };
+};
 
 export const serializerCompiler: ZodFastifySerializerCompiler =
   createSerializerCompiler();

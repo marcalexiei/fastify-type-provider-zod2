@@ -49,7 +49,11 @@
     "lint": "biome check . && tsc --noEmit",
     "lint:fix": "biome check --write .",
     "release": "pnpm run build && changeset publish",
-    "check-all": "pnpm run test && pnpm run lint"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:lint": "tsc -p examples/tsconfig.json",
+    "check-all": "pnpm run build && pnpm run test && pnpm run lint && pnpm run docs:lint"
   },
   "dependencies": {
     "@fastify/error": "^4.2.0"
@@ -76,6 +80,7 @@
     "typescript": "5.8.3",
     "unplugin-isolated-decl": "^0.14.5",
     "vite": "6.3.5",
+    "vitepress": "1.6.3",
     "vitest": "3.2.4",
     "zod": "4.0.5"
   }

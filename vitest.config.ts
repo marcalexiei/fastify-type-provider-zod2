@@ -7,7 +7,7 @@ export default defineConfig({
     reporters: ['verbose'],
     coverage: {
       provider: 'v8',
-      all: true,
+      include: ['src'],
       reporter: ['text', 'lcov'],
       thresholds: {
         statements: 95,
