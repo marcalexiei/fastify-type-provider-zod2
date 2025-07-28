@@ -1,5 +1,13 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.0.2
+
+### Patch Changes
+
+- [#12](https://github.com/marcalexiei/fastify-type-provider-zod/pull/12) [`2ca0c88`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/2ca0c88b5fa89e77bf7a2f6ab373e7d30ce39506) Thanks [@marcalexiei](https://github.com/marcalexiei)! - feat: add documentation site and deploy after package release
+
+  No code changes affecting user land have been made
+
 ## 1.0.1
 
 ### Patch Changes
