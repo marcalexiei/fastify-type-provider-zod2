@@ -3,7 +3,6 @@ import { defineConfig } from 'vitepress';
 const base = '/fastify-type-provider-zod';
 
 // https://vitepress.dev/reference/site-config
-// biome-ignore lint/style/noDefaultExport: need to release new config
 export default defineConfig({
   // https://vitepress.dev/guide/deploy#github-pages
   base,
