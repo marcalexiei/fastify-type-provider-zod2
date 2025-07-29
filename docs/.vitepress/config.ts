@@ -10,6 +10,9 @@ export default defineConfig({
   // This should have @marcalexiei as prefix but is breaking header layout since is quite long
   title: 'fastify-type-provider-zod',
   description: 'Zod Type Provider for Fastify@5',
+
+  head: [['link', { rel: 'icon', href: `${base}/favicon.ico` }]],
+
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
