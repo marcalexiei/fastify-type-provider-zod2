@@ -1,6 +1,6 @@
 {
   "name": "@marcalexiei/fastify-type-provider-zod",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Zod Type Provider for Fastify@5",
   "type": "module",
   "publishConfig": {

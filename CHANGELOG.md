@@ -1,5 +1,13 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.0.4
+
+### Patch Changes
+
+- [`71cc85c`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/71cc85c6ac75da5919e83d7864a06740954f5227) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs: add favicon
+
+- [`a7eab5d`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/a7eab5dec609753b76ed14a20e40fa3c9e56558b) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs: add search, edit links and lastUpdated timestamp
+
 ## 1.0.3
 
 ### Patch Changes
