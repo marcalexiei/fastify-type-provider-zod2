@@ -7,7 +7,8 @@ export default defineConfig({
   // https://vitepress.dev/guide/deploy#github-pages
   base,
 
-  title: '@marcalexiei/fastify-type-provider-zod',
+  // This should have @marcalexiei as prefix but is breaking header layout since is quite long
+  title: 'fastify-type-provider-zod',
   description: 'Zod Type Provider for Fastify@5',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -37,5 +38,15 @@ export default defineConfig({
         link: 'https://github.com/marcalexiei/fastify-type-provider-zod',
       },
     ],
+
+    search: {
+      provider: 'local',
+    },
+
+    editLink: {
+      pattern:
+        'https://github.com/marcalexiei/fastify-type-provider-zod/edit/main/docs/:path',
+    },
   },
+  lastUpdated: true,
 });
