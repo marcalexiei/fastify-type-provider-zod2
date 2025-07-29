@@ -1,5 +1,11 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.0.5
+
+### Patch Changes
+
+- [`28a10bc`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/28a10bc2d9098b0fb34d0966d56eca07ed784514) Thanks [@marcalexiei](https://github.com/marcalexiei)! - fix: fix docs deploy after release
+
 ## 1.0.4
 
 ### Patch Changes
