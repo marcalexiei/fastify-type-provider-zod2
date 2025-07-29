@@ -1,5 +1,13 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.0.3
+
+### Patch Changes
+
+- [`12c81aa`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/12c81aa176d5c17b7c3a8f44d01562bf1b633d88) Thanks [@marcalexiei](https://github.com/marcalexiei)! - fix: documentation should be deployed only when package is released, not always
+
+  No code changes affecting user land have been made
+
 ## 1.0.2
 
 ### Patch Changes
