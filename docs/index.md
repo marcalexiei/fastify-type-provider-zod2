@@ -3,8 +3,9 @@
 layout: home
 
 hero:
-  name: "@marcalexiei/fastify-type-provider-zod"
-  text: "Zod Type Provider for Fastify@5"
+  name: "@marcalexiei"
+  text: "fastify-type-provider-zod"
+  tagline: "Zod Type Provider for Fastify@5"
   image:
     src: /logo.png
     alt: ''
