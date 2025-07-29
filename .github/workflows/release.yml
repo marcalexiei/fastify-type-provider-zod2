@@ -25,7 +25,7 @@ jobs:
       id-token: write # added for provenance
 
     outputs:
-      published: ${{ steps.changesets.outputs.published_new_version }}
+      published: ${{ steps.changesets.changesets_output.published }}
 
     steps:
       - name: Checkout
@@ -48,16 +48,18 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
-      - name: actions/deploy-pages
+      - name: Output changeset result
+        id: changesets_output
         if: ${{ steps.changesets.outputs.hasChangesets == 'false' }}
-        run: echo "published_new_version=true" >> "$GITHUB_OUTPUT"
+        run: echo "published=true" >> "$GITHUB_OUTPUT"
 
   documentation-build:
     name: Documentation build
     runs-on: ubuntu-latest
+    timeout-minutes: 2
     needs:
       - release
-    if: ${{ needs.release.outputs.published_new_version }}
+    if: ${{ needs.release.outputs.published }}
 
     permissions:
       contents: read
@@ -80,11 +82,11 @@ jobs:
   documentation-deploy:
     name: Documentation deploy
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 1
     needs:
       - release
       - documentation-build
-    if: ${{ needs.release.outputs.published_new_version }}
+    if: ${{ needs.release.outputs.published }}
     
     permissions:
       contents: read
@@ -103,6 +105,7 @@ jobs:
   on-ci-fail:
     name: 'Failure'
     runs-on: ubuntu-latest
+    timeout-minutes: 1
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
     steps:
       - run: echo 'CI failed. Release won't be executed'
