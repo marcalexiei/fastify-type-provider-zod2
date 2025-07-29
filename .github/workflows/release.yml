@@ -25,7 +25,7 @@ jobs:
       id-token: write # added for provenance
 
     outputs:
-      published: ${{ steps.changesets.outputs.published }}
+      published: ${{ steps.changesets.outputs.published_new_version }}
 
     steps:
       - name: Checkout
@@ -48,12 +48,16 @@ jobs:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: true
 
+      - name: actions/deploy-pages
+        if: ${{ steps.changesets.outputs.hasChangesets == 'false' }}
+        run: echo "published_new_version=true" >> "$GITHUB_OUTPUT"
+
   documentation-build:
     name: Documentation build
     runs-on: ubuntu-latest
     needs:
       - release
-    if: ${{ needs.release.outputs.published }}
+    if: ${{ needs.release.outputs.published_new_version }}
 
     permissions:
       contents: read
@@ -80,7 +84,7 @@ jobs:
     needs:
       - release
       - documentation-build
-    if: ${{ needs.release.outputs.published }}
+    if: ${{ needs.release.outputs.published_new_version }}
     
     permissions:
       contents: read
