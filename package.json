@@ -19,8 +19,8 @@
   "bugs": {
     "url": "https://github.com/marcalexiei/fastify-type-provider-zod/issues"
   },
-  "homepage": "https://github.com/marcalexiei/fastify-type-provider-zod",
-  "author": "turkerd",
+  "homepage": "https://marcalexiei.github.io/fastify-type-provider-zod/",
+  "author": "turkerdev",
   "maintainers": [
     "marcalexiei"
   ],
