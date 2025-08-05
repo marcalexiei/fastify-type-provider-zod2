@@ -16,19 +16,19 @@ Install the plugin and its peer dependencies with your preferred package manager
 ::: code-group
 
 ```sh [npm]
-npm add -D zod fastify @marcalexiei/fastify-type-provider-zod 
+npm install --save fastify zod @marcalexiei/fastify-type-provider-zod 
 ```
 
 ```sh [pnpm]
-pnpm add -D zod fastify @marcalexiei/fastify-type-provider-zod 
+pnpm add fastify zod @marcalexiei/fastify-type-provider-zod 
 ```
 
 ```sh [yarn]
-yarn add -D zod fastify @marcalexiei/fastify-type-provider-zod 
+yarn add fastify zod @marcalexiei/fastify-type-provider-zod 
 ```
 
 ```sh [bun]
-bun add -D zod fastify @marcalexiei/fastify-type-provider-zod 
+bun add fastify zod @marcalexiei/fastify-type-provider-zod 
 ```
 
 :::
