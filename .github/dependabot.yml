@@ -13,3 +13,38 @@ updates:
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: '@types/node'
+    groups:
+      peer:
+        applies-to: 'version-updates'
+        dependency-type: 'development'
+        patterns:
+          - '@fastify/swagger'
+          - '@fastify/swagger-ui'
+          - 'fastify'
+          - 'fastify-plugin'
+          - 'openapi-types'
+          - 'zod'
+
+      changeset:
+        applies-to: 'version-updates'
+        dependency-type: 'development'
+        patterns:
+          - '@changesets/*'
+
+      test-and-build:
+        applies-to: 'version-updates'
+        dependency-type: 'development'
+        patterns:
+          - 'vite'
+          - 'vitest'
+          - '@seriousme/openapi-schema-validator'
+          - '@vitest/coverage-v8'
+          - 'typescript'
+          - 'unplugin-isolated-decl'
+
+      lint:
+        applies-to: 'version-updates'
+        dependency-type: 'development'
+        patterns:
+          - '@biomejs/biome'
+          - '@marcalexiei/biome-config'
