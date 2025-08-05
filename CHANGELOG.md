@@ -1,5 +1,13 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.0.6
+
+### Patch Changes
+
+- [`2b836ab`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/2b836ab6e48220c27c24c40182806a65aba547a3) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs(package): update homepage field
+
+- [`d9c5eb0`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/d9c5eb0c3b309969a4259f1cdac3aa051af8a290) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs(setup): correct install scripts
+
 ## 1.0.5
 
 ### Patch Changes
