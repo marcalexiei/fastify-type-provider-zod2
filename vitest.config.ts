@@ -19,7 +19,7 @@ export default defineConfig({
     projects: [
       {
         test: {
-          name: 'runtime',
+          name: { label: 'runtime', color: 'cyan' },
           dir: './test',
         },
       },
@@ -28,7 +28,7 @@ export default defineConfig({
         [
           ['tsconfig.bundler.json', 'green'],
           ['tsconfig.node.json', 'magenta'],
-          ['tsconfig.node16.json', 'cyan'],
+          ['tsconfig.node16.json', 'white'],
         ] as const
       ).map<TestProjectConfiguration>(([it, color]) => ({
         test: {
