@@ -65,12 +65,12 @@
     "zod": "^3.25.67 || ^4"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.1.2",
+    "@biomejs/biome": "2.2.0",
     "@changesets/changelog-github": "0.5.1",
     "@changesets/cli": "2.29.5",
     "@fastify/swagger": "9.5.1",
     "@fastify/swagger-ui": "5.2.3",
-    "@marcalexiei/biome-config": "1.2.2",
+    "@marcalexiei/biome-config": "1.3.0",
     "@seriousme/openapi-schema-validator": "2.4.2",
     "@types/node": "24.3.0",
     "@vitest/coverage-v8": "3.2.4",
