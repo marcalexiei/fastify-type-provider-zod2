@@ -1,5 +1,11 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.1.0
+
+### Minor Changes
+
+- [`4e81268`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/4e81268e781a4b7fa499f730ac88a4d3ce825b35) Thanks [@marcalexiei](https://github.com/marcalexiei)! - feat(core): use `interface` instead of `type` when possible
+
 ## 1.0.6
 
 ### Patch Changes
