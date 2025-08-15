@@ -44,10 +44,10 @@ interface Schema extends FastifySchema {
   hide?: boolean;
 }
 
-type CreateJsonSchemaTransformOptions = {
+interface CreateJsonSchemaTransformOptions {
   skipList?: ReadonlyArray<string>;
   schemaRegistry?: $ZodRegistry<{ id?: string | undefined }>;
-};
+}
 
 export const createJsonSchemaTransform = ({
   skipList = defaultSkipList,
@@ -136,9 +136,9 @@ export const createJsonSchemaTransform = ({
 export const jsonSchemaTransform: SwaggerTransform<Schema> =
   createJsonSchemaTransform({});
 
-type CreateJsonSchemaTransformObjectOptions = {
+interface CreateJsonSchemaTransformObjectOptions {
   schemaRegistry?: $ZodRegistry<{ id?: string | undefined }>;
-};
+}
 
 export const createJsonSchemaTransformObject = (
   options: CreateJsonSchemaTransformObjectOptions,
@@ -226,9 +226,9 @@ function resolveSchema(
 
 // biome-ignore-start lint/suspicious/noExplicitAny: Same as json stringify
 // #region ZodSerializerCompilerOptions
-export type ZodSerializerCompilerOptions = {
+export interface ZodSerializerCompilerOptions {
   replacer?: (this: any, key: string, value: any) => any;
-};
+}
 // #endregion ZodSerializerCompilerOptions
 // biome-ignore-end lint/suspicious/noExplicitAny: Same as json stringify
 
