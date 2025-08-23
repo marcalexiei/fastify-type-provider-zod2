@@ -1,5 +1,17 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.1.0
+
+### Minor Changes
+
+- [`539a190`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/539a190a629e32813fe26a4e80c706ea50dab2c9) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs: use vitepress alpha
+
+- [`4e81268`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/4e81268e781a4b7fa499f730ac88a4d3ce825b35) Thanks [@marcalexiei](https://github.com/marcalexiei)! - feat(core): use `interface` instead of `type` when possible
+
+### Patch Changes
+
+- [`7bca7bc`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/7bca7bc0f3defecdba2bea1cffdc66c012ea1286) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs(README): update badge style
+
 ## 1.0.6
 
 ### Patch Changes
