@@ -5,13 +5,13 @@
 [![npm version][npmVersionBadge]][npmVersionURL]
 [![issues][issuesBadge]][issuesURL]
 
-[CIBadge]: https://github.com/marcalexiei/fastify-type-provider-zod/actions/workflows/CI.yml/badge.svg
+[CIBadge]: https://img.shields.io/github/actions/workflow/status/marcalexiei/fastify-type-provider-zod/CI.yml?style=for-the-badge&logo=github&event=push
 [CIURL]: https://github.com/marcalexiei/fastify-type-provider-zod/actions/workflows/CI.yml
-[CheckerBadge]: https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=flat&logo=biome
+[CheckerBadge]: https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=for-the-badge&logo=biome
 [CheckerURL]: https://biomejs.dev
-[npmVersionBadge]: https://img.shields.io/npm/v/@marcalexiei/fastify-type-provider-zod.svg?style=flat-square
+[npmVersionBadge]: https://img.shields.io/npm/v/@marcalexiei/fastify-type-provider-zod.svg?style=for-the-badge
 [npmVersionURL]: https://www.npmjs.com/package/@marcalexiei/fastify-type-provider-zod
-[issuesBadge]: https://img.shields.io/github/issues/marcalexiei/fastify-type-provider-zod.svg
+[issuesBadge]: https://img.shields.io/github/issues/marcalexiei/fastify-type-provider-zod.svg?style=for-the-badge
 [issuesURL]: https://github.com/marcalexiei/fastify-type-provider-zod/issues
 
 ##  Reason
