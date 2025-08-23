@@ -1,5 +1,11 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.2.0
+
+### Minor Changes
+
+- [`af64b3b`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/af64b3b32a1f5d105af4e6f0be9f51073fbdf82e) Thanks [@marcalexiei](https://github.com/marcalexiei)! - feat(openapi): support `description` and `examples` from schema `meta`
+
 ## 1.1.0
 
 ### Minor Changes
