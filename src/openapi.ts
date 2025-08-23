@@ -1,8 +1,6 @@
 import type { OpenAPIV3, OpenAPIV3_1 } from 'openapi-types';
 import type { JSONSchema } from 'zod/v4/core';
 
-// todo remove ts-expect-error
-
 export type OpenAPISchemaVersion = '3.0' | '3.1';
 
 export const getOpenAPISchemaVersion = (documentObject: {
@@ -18,20 +16,25 @@ export const getOpenAPISchemaVersion = (documentObject: {
     return '3.0';
   }
 
-  /* v8 ignore next */
+  /* v8 ignore next 2 */
   throw new Error('Unsupported OpenAPI document object');
 };
 
 export const convertSchemaToOpenAPISchemaVersion = (
   jsonSchema: JSONSchema.BaseSchema,
-  openAPISchemaVersion: OpenAPISchemaVersion,
+  options: { openAPISchemaVersion: OpenAPISchemaVersion },
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: life is bitter :(
 ): JSONSchema.BaseSchema => {
-  if (openAPISchemaVersion === '3.1') {
-    return jsonSchema;
-  }
+  const { openAPISchemaVersion } = options;
 
   const clone = { ...jsonSchema };
+
+  if (openAPISchemaVersion === '3.1') {
+    delete clone.$id;
+    delete clone.$schema;
+
+    return clone;
+  }
 
   // if (clone.type === 'null') {
   //   clone.nullable = true;
@@ -75,8 +78,11 @@ export const convertSchemaToOpenAPISchemaVersion = (
     clone.maxItems ??= tuple.length;
 
     clone.items = {
-      // @ts-expect-error
-      oneOf: tuple.map(convertSchemaToOpenAPISchemaVersion),
+      oneOf: tuple.map((it) =>
+        convertSchemaToOpenAPISchemaVersion(it as JSONSchema.BaseSchema, {
+          openAPISchemaVersion,
+        }),
+      ),
     };
 
     delete clone.prefixItems;
@@ -97,6 +103,7 @@ export const convertSchemaToOpenAPISchemaVersion = (
   }
 
   for (const key of [
+    'id',
     '$schema',
     '$id',
     'unevaluatedProperties',
@@ -112,22 +119,26 @@ export const convertSchemaToOpenAPISchemaVersion = (
   const recursive = (v: JSONSchema.BaseSchema): unknown => {
     if (Array.isArray(v)) {
       return v.map((it) =>
-        convertSchemaToOpenAPISchemaVersion(it, openAPISchemaVersion),
+        convertSchemaToOpenAPISchemaVersion(it, {
+          openAPISchemaVersion,
+        }),
       );
     }
-    return convertSchemaToOpenAPISchemaVersion(v, openAPISchemaVersion);
+    return convertSchemaToOpenAPISchemaVersion(v, { openAPISchemaVersion });
   };
 
   if (clone.properties) {
     for (const [k, v] of Object.entries(clone.properties)) {
-      // @ts-expect-error
-      clone.properties[k] = convertSchemaToOpenAPISchemaVersion(v);
+      clone.properties[k] = convertSchemaToOpenAPISchemaVersion(
+        v as JSONSchema.BaseSchema,
+        { openAPISchemaVersion },
+      );
     }
   }
 
   if (clone.items && !Array.isArray(clone.items)) {
     // @ts-expect-error
-    clone.items = recursive(clone.items);
+    clone.items = recursive(clone.items) as JSONSchema.ObjectSchema;
   }
 
   for (const key of [
@@ -141,8 +152,7 @@ export const convertSchemaToOpenAPISchemaVersion = (
     'contains',
   ]) {
     if (clone[key]) {
-      // @ts-expect-error
-      clone[key] = recursive(clone[key]);
+      clone[key] = recursive(clone[key] as JSONSchema.BaseSchema);
     }
   }
 

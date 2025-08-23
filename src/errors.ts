@@ -37,15 +37,19 @@ const ResponseSerializationBase: FastifyErrorConstructor<
 );
 
 export class ResponseSerializationError extends ResponseSerializationBase {
+  public method: string;
+  public url: string;
   public override cause: $ZodError;
 
   public constructor(
-    public method: string,
-    public url: string,
+    method: string,
+    url: string,
     options: { cause: $ZodError },
   ) {
     super({ cause: options.cause });
 
+    this.method = method;
+    this.url = url;
     this.cause = options.cause;
   }
 }

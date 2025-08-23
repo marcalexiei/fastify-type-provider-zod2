@@ -1,5 +1,215 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`transformer > description and examples fields > should populate description and examples 3.0 1`] = `
+{
+  "components": {
+    "schemas": {
+      "User": {
+        "additionalProperties": false,
+        "description": "User",
+        "example": {
+          "name": "Someone",
+        },
+        "properties": {
+          "name": {
+            "default": "Unknown",
+            "type": "string",
+          },
+        },
+        "required": [
+          "name",
+        ],
+        "type": "object",
+      },
+      "UserId": {
+        "default": "J1",
+        "description": "User ID",
+        "example": "U234",
+        "type": "string",
+      },
+      "UserIdInput": {
+        "default": "J1",
+        "description": "User ID",
+        "example": "U234",
+        "type": "string",
+      },
+    },
+  },
+  "info": {
+    "title": "SampleApi",
+    "version": "1.0.1",
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/login": {
+      "post": {
+        "parameters": [
+          {
+            "description": "query string example",
+            "in": "query",
+            "name": "baz",
+            "required": true,
+            "schema": {
+              "example": "wiiiiiiiiii",
+              "type": "string",
+            },
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "userId": {
+                    "$ref": "#/components/schemas/UserIdInput",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "baz": {
+                      "type": "string",
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User",
+                    },
+                    "userId": {
+                      "$ref": "#/components/schemas/UserId",
+                    },
+                  },
+                  "required": [
+                    "baz",
+                    "userId",
+                    "user",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Default Response",
+          },
+        },
+      },
+    },
+  },
+  "servers": [],
+}
+`;
+
+exports[`transformer > description and examples fields > should populate description and examples 3.1 1`] = `
+{
+  "components": {
+    "schemas": {
+      "User": {
+        "additionalProperties": false,
+        "description": "User",
+        "example": {
+          "name": "Someone",
+        },
+        "properties": {
+          "name": {
+            "default": "Unknown",
+            "type": "string",
+          },
+        },
+        "required": [
+          "name",
+        ],
+        "type": "object",
+      },
+      "UserId": {
+        "default": "J1",
+        "description": "User ID",
+        "example": "U234",
+        "type": "string",
+      },
+      "UserIdInput": {
+        "default": "J1",
+        "description": "User ID",
+        "example": "U234",
+        "type": "string",
+      },
+    },
+  },
+  "info": {
+    "title": "SampleApi",
+    "version": "1.0.1",
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/login": {
+      "post": {
+        "parameters": [
+          {
+            "description": "query string example",
+            "in": "query",
+            "name": "baz",
+            "required": true,
+            "schema": {
+              "example": "wiiiiiiiiii",
+              "type": "string",
+            },
+          },
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "userId": {
+                    "$ref": "#/components/schemas/UserIdInput",
+                  },
+                },
+                "type": "object",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "baz": {
+                      "type": "string",
+                    },
+                    "user": {
+                      "$ref": "#/components/schemas/User",
+                    },
+                    "userId": {
+                      "$ref": "#/components/schemas/UserId",
+                    },
+                  },
+                  "required": [
+                    "baz",
+                    "userId",
+                    "user",
+                  ],
+                  "type": "object",
+                },
+              },
+            },
+            "description": "Default Response",
+          },
+        },
+      },
+    },
+  },
+  "servers": [],
+}
+`;
+
 exports[`transformer > generates types for fastify-swagger correctly 1`] = `
 {
   "components": {
@@ -36,6 +246,7 @@ exports[`transformer > generates types for fastify-swagger correctly 1`] = `
                 "properties": {
                   "code": {
                     "maximum": 10000,
+                    "minimum": 1,
                     "type": "number",
                   },
                   "password": {
@@ -417,48 +628,12 @@ exports[`transformer > should generate nested and circular refs correctly 1`] = 
         ],
         "type": "object",
       },
-      "GroupInput": {
-        "properties": {
-          "id": {
-            "type": "string",
-          },
-          "subgroups": {
-            "items": {
-              "$ref": "#/components/schemas/GroupInput",
-            },
-            "type": "array",
-          },
-        },
-        "required": [
-          "id",
-          "subgroups",
-        ],
-        "type": "object",
-      },
       "User": {
         "additionalProperties": false,
         "properties": {
           "groups": {
             "items": {
               "$ref": "#/components/schemas/Group",
-            },
-            "type": "array",
-          },
-          "id": {
-            "type": "string",
-          },
-        },
-        "required": [
-          "id",
-          "groups",
-        ],
-        "type": "object",
-      },
-      "UserInput": {
-        "properties": {
-          "groups": {
-            "items": {
-              "$ref": "#/components/schemas/GroupInput",
             },
             "type": "array",
           },

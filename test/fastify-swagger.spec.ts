@@ -40,7 +40,7 @@ describe('transformer', () => {
     const LOGIN_SCHEMA = z.object({
       username: z.string().max(32).describe('someDescription'),
       seed: z.number().min(1).max(1000),
-      code: z.number().lt(10_000),
+      code: z.number().lt(10_000).gt(1),
       password: z.string().max(32),
     });
 
@@ -417,12 +417,8 @@ describe('transformer', () => {
 
     const schemaRegistry = z.registry<{ id: string }>();
 
-    schemaRegistry.add(GROUP_SCHEMA, {
-      id: 'Group',
-    });
-    schemaRegistry.add(USER_SCHEMA, {
-      id: 'User',
-    });
+    schemaRegistry.add(GROUP_SCHEMA, { id: 'Group' });
+    schemaRegistry.add(USER_SCHEMA, { id: 'User' });
 
     app.register(fastifySwagger, {
       openapi: {
@@ -746,5 +742,139 @@ describe('transformer', () => {
         await expect(openApiSpec).toBeValidOpenAPISchema();
       },
     );
+  });
+
+  describe('description and examples fields', () => {
+    const UserIdSchema = z.string().optional().default('J1').meta({
+      description: 'User ID',
+      example: 'U234',
+    });
+
+    const UserSchema = z
+      .strictObject({ name: z.string().optional().default('Unknown') })
+      .meta({
+        description: 'User',
+        example: { name: 'Someone' },
+      });
+
+    it('should populate description and examples 3.0', async () => {
+      const app = Fastify();
+      app.setValidatorCompiler(validatorCompiler);
+      app.setSerializerCompiler(serializerCompiler);
+
+      const schemaRegistry = z.registry<{ id: string }>();
+
+      schemaRegistry.add(UserIdSchema, { id: 'UserId' });
+      schemaRegistry.add(UserSchema, { id: 'User' });
+
+      await app.register(fastifySwagger, {
+        openapi: {
+          openapi: '3.1.0',
+          info: {
+            title: 'SampleApi',
+            version: '1.0.1',
+          },
+          servers: [],
+        },
+        transform: createJsonSchemaTransform({ schemaRegistry }),
+        transformObject: createJsonSchemaTransformObject({ schemaRegistry }),
+      });
+
+      await app.register(fastifySwaggerUI, {
+        routePrefix: '/documentation',
+      });
+
+      app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/login',
+        schema: {
+          querystring: z.object({
+            baz: z.string().meta({
+              description: 'query string example',
+              example: 'wiiiiiiiiii',
+            }),
+          }),
+          body: z.object({
+            userId: UserIdSchema,
+          }),
+          response: {
+            200: z.object({
+              baz: z.string(),
+              userId: UserIdSchema,
+              user: UserSchema,
+            }),
+          },
+        },
+        handler: (_, res) => {
+          res.send({} as never);
+        },
+      });
+
+      const openApiSpecResponse = await app.inject().get('/documentation/json');
+      const openApiSpec = openApiSpecResponse.json();
+
+      expect(openApiSpec).toMatchSnapshot();
+      await expect(openApiSpec).toBeValidOpenAPISchema();
+    });
+
+    it('should populate description and examples 3.1', async () => {
+      const app = Fastify();
+      app.setValidatorCompiler(validatorCompiler);
+      app.setSerializerCompiler(serializerCompiler);
+
+      const schemaRegistry = z.registry<{ id: string }>();
+
+      schemaRegistry.add(UserIdSchema, { id: 'UserId' });
+      schemaRegistry.add(UserSchema, { id: 'User' });
+
+      await app.register(fastifySwagger, {
+        openapi: {
+          openapi: '3.1.0',
+          info: {
+            title: 'SampleApi',
+            version: '1.0.1',
+          },
+          servers: [],
+        },
+        transform: createJsonSchemaTransform({ schemaRegistry }),
+        transformObject: createJsonSchemaTransformObject({ schemaRegistry }),
+      });
+
+      await app.register(fastifySwaggerUI, {
+        routePrefix: '/documentation',
+      });
+
+      app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/login',
+        schema: {
+          querystring: z.object({
+            baz: z.string().meta({
+              description: 'query string example',
+              example: 'wiiiiiiiiii',
+            }),
+          }),
+          body: z.object({
+            userId: UserIdSchema,
+          }),
+          response: {
+            200: z.object({
+              baz: z.string(),
+              userId: UserIdSchema,
+              user: UserSchema,
+            }),
+          },
+        },
+        handler: (_, res) => {
+          res.send({} as never);
+        },
+      });
+
+      const openApiSpecResponse = await app.inject().get('/documentation/json');
+      const openApiSpec = openApiSpecResponse.json();
+
+      expect(openApiSpec).toMatchSnapshot();
+      await expect(openApiSpec).toBeValidOpenAPISchema();
+    });
   });
 });

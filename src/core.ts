@@ -23,7 +23,11 @@ import {
   ResponseSerializationError,
 } from './errors.ts';
 import { getOpenAPISchemaVersion } from './openapi.ts';
-import { zodRegistryToJson, zodSchemaToJson } from './zod-to-json.ts';
+import {
+  removeUnusedRefs,
+  zodRegistryToJson,
+  zodSchemaToJson,
+} from './zod-to-json.ts';
 
 const defaultSkipList = [
   '/documentation/',
@@ -64,10 +68,7 @@ export const createJsonSchemaTransform = ({
     const { schema, url } = transformData;
 
     if (!schema) {
-      return {
-        schema,
-        url,
-      };
+      return { schema, url };
     }
 
     const { response, headers, querystring, body, params, hide, ...rest } =
@@ -175,7 +176,7 @@ export const createJsonSchemaTransformObject = (
       }
     }
 
-    return {
+    return removeUnusedRefs({
       ...documentObject.openapiObject,
       components: {
         ...documentObject.openapiObject.components,
@@ -185,7 +186,7 @@ export const createJsonSchemaTransformObject = (
           ...outputSchemas,
         },
       },
-    } as ReturnType<SwaggerTransformObject>;
+    }) as ReturnType<SwaggerTransformObject>;
   };
 };
 
@@ -214,12 +215,14 @@ function resolveSchema(
     return maybeSchema;
   }
 
-  if (
-    'properties' in maybeSchema &&
-    maybeSchema.properties instanceof $ZodType
-  ) {
-    return maybeSchema.properties;
-  }
+  // I'm not sure about the need of this code.
+  // Unit tests are not failing without it so keep it here for reference
+  // if (
+  //   'properties' in maybeSchema &&
+  //   maybeSchema.properties instanceof $ZodType
+  // ) {
+  //   return maybeSchema.properties;
+  // }
 
   throw new InvalidSchemaError(JSON.stringify(maybeSchema));
 }

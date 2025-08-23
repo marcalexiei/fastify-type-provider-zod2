@@ -4,6 +4,7 @@ import {
   convertSchemaToOpenAPISchemaVersion,
   type OpenAPISchemaVersion,
 } from './openapi.ts';
+import type { ZodOpenApiMetadata } from './zod-meta.ts';
 
 const getSchemaId = (id: string, io: 'input' | 'output') => {
   return io === 'input' ? `${id}Input` : id;
@@ -28,16 +29,29 @@ const getOverride = (
   },
   io: 'input' | 'output',
 ) => {
-  if (io === 'output') {
-    // Allow dates to be represented as strings in output schemas
-    if (isZodDate(ctx.zodSchema)) {
-      ctx.jsonSchema.type = 'string';
-      ctx.jsonSchema.format = 'date-time';
+  // @ts-expect-error can't find a way to access meta of a schema
+  const meta = ctx.zodSchema.meta() as ZodOpenApiMetadata;
+  if (meta) {
+    if (typeof meta.description === 'string') {
+      ctx.jsonSchema.description = meta.description;
     }
+    if (meta.example) {
+      ctx.jsonSchema.example = meta.example;
+    }
+  }
 
-    if (isZodUndefined(ctx.zodSchema)) {
-      ctx.jsonSchema.type = 'null';
-    }
+  if (io === 'input') {
+    return;
+  }
+
+  // Allow dates to be represented as strings in output schemas
+  if (isZodDate(ctx.zodSchema)) {
+    ctx.jsonSchema.type = 'string';
+    ctx.jsonSchema.format = 'date-time';
+  }
+
+  if (isZodUndefined(ctx.zodSchema)) {
+    ctx.jsonSchema.type = 'null';
   }
 };
 
@@ -47,8 +61,13 @@ export const zodSchemaToJson: (
   zodSchema: $ZodType,
   registry: $ZodRegistry<{ id?: string }>,
   io: 'input' | 'output',
-  openAPIVersion: OpenAPISchemaVersion,
-) => JSONSchema.BaseSchema = (zodSchema, registry, io, openAPIVersion) => {
+  openAPISchemaVersion: OpenAPISchemaVersion,
+) => JSONSchema.BaseSchema = (
+  zodSchema,
+  registry,
+  io,
+  openAPISchemaVersion,
+) => {
   const schemaRegistryEntry = registry.get(zodSchema);
 
   /**
@@ -70,7 +89,7 @@ export const zodSchemaToJson: (
    * @see https://github.com/colinhacks/zod/issues/4281
    */
   const tempID = 'GEN';
-  const tempRegistry = new $ZodRegistry<{ id?: string }>();
+  const tempRegistry = new $ZodRegistry<{ id: string }>();
   tempRegistry.add(zodSchema, { id: tempID });
 
   const {
@@ -111,14 +130,20 @@ export const zodSchemaToJson: (
 
   const jsonSchemaWithRef = JSON.parse(jsonSchemaReplaceRef);
 
-  return convertSchemaToOpenAPISchemaVersion(jsonSchemaWithRef, openAPIVersion);
+  return convertSchemaToOpenAPISchemaVersion(jsonSchemaWithRef, {
+    openAPISchemaVersion,
+  });
 };
 
 export const zodRegistryToJson: (
   registry: $ZodRegistry<{ id?: string }>,
   io: 'input' | 'output',
-  openAPIVersion: OpenAPISchemaVersion,
-) => Record<string, JSONSchema.BaseSchema> = (registry, io, openAPIVersion) => {
+  openAPISchemaVersion: OpenAPISchemaVersion,
+) => Record<string, JSONSchema.BaseSchema> = (
+  registry,
+  io,
+  openAPISchemaVersion,
+) => {
   const result = toJSONSchema(registry, {
     target: zodJSONSchemaTarget,
     io,
@@ -132,12 +157,53 @@ export const zodRegistryToJson: (
   const jsonSchemas: Record<string, JSONSchema.BaseSchema> = {};
 
   for (const id in result) {
-    const { id: _, ...schemaV3 } = convertSchemaToOpenAPISchemaVersion(
+    jsonSchemas[getSchemaId(id, io)] = convertSchemaToOpenAPISchemaVersion(
       result[id],
-      openAPIVersion,
+      { openAPISchemaVersion },
     );
-    jsonSchemas[getSchemaId(id, io)] = schemaV3;
   }
 
   return jsonSchemas;
 };
+
+const refPropertyValueMatch = /^#\/components\//;
+
+function collectRefs(obj: unknown, refs = new Set<string>()): Set<string> {
+  if (obj && typeof obj === 'object') {
+    for (const [key, value] of Object.entries(obj)) {
+      if (key === '$ref' && typeof value === 'string') {
+        refs.add(value.replace(refPropertyValueMatch, ''));
+      } else {
+        collectRefs(value, refs);
+      }
+    }
+  }
+  return refs;
+}
+
+export function removeUnusedRefs(
+  spec: JSONSchema.BaseSchema,
+): JSONSchema.BaseSchema {
+  const usedRefs = collectRefs(spec.paths);
+  const components = spec.components as Record<string, unknown>;
+
+  /* c8 ignore next 3, usually open api schema has components schema set as empty object */
+  if (!components) {
+    return spec;
+  }
+
+  for (const section of Object.keys(components)) {
+    const items = components[section] as Record<string, unknown>;
+    if (!items) {
+      continue;
+    }
+
+    for (const key of Object.keys(items)) {
+      if (![...usedRefs].some((r) => r.startsWith(`${section}/${key}`))) {
+        delete items[key];
+      }
+    }
+  }
+
+  return spec;
+}

@@ -19,3 +19,5 @@ export {
   ResponseSerializationError,
   type ZodFastifySchemaValidationError,
 } from './errors.ts';
+
+export type { ZodOpenApiMetadata } from './zod-meta.ts';
