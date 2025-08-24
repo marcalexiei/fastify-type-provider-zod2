@@ -22,6 +22,8 @@ Here's how to do it:
 
 ## How to create refs to the schemas?
 
+### With zod `globalRegistry`
+
 This plugin automatically generates JSON Schema references via the `jsonSchemaTransformObject` function.
 To enable this, you register your schemas in the global Zod registry and assign each one a unique `id`.
 Once registered, `fastifySwagger` will generate an OpenAPI document that references these schemas appropriately.
@@ -30,6 +32,39 @@ For example, the following code creates a reference to the `User` schema,
 ensuring it is included and properly linked in the OpenAPI specification.
 
 <<< ../examples/schema-refs.ts
+
+### With custom schema registry
+
+::: danger
+If a custom registry is used, any properties added via `.meta()` are lost when `.register()` is called.
+
+To prevent data loss, provide all metadata at the time of schema registration.
+:::
+
+:::tip
+`ZodOpenApiSchemaMetadata` type can be used to have proper intelli
+:::
+
+```ts
+import { z } from 'zod/v4';
+import type { ZodOpenApiSchemaMetadata } from '@marcalexiei/fastify-type-provider-zod';
+
+const customRegistry = z.registry<ZodOpenApiSchemaMetadata>();
+
+z
+  .string()
+  .optional()
+  .default('U1')
+  .register(customRegistry{ 
+    id: 'UserId', 
+    description: 'User identifier',
+    example: 'U234', 
+  })
+```
+
+Here is the complete snippet:
+
+<<< ../examples/schema-refs-custom-registry.ts
 
 ## How to create a plugin?
 

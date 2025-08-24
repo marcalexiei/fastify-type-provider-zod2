@@ -4,6 +4,7 @@
     "dist",
     "coverage",
     "examples",
+    "sandbox",
 
     // they use directly exports default which is
     // incompatible with isolatedDeclarations

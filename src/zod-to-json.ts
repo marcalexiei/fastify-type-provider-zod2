@@ -35,8 +35,7 @@ const getOverride = (
   // will be lost when `.register()` is called.
   let meta = registry.get(ctx.zodSchema) as Record<string, unknown>;
 
-  // You can still inlining metadata in the schema that are not included
-  // in the registry, 
+  // You can still inlining metadata in the schema that are not included in the registry,
   // e.g., a query param
   if (!meta) {
     // @ts-expect-error

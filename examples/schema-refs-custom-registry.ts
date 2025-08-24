@@ -1,21 +1,26 @@
 import fastifySwagger from '@fastify/swagger';
 import fastifySwaggerUI from '@fastify/swagger-ui';
-import type { ZodTypeProvider } from '@marcalexiei/fastify-type-provider-zod';
+import type {
+  ZodOpenApiSchemaMetadata,
+  ZodTypeProvider,
+} from '@marcalexiei/fastify-type-provider-zod';
 import {
-  jsonSchemaTransform,
-  jsonSchemaTransformObject,
+  createJsonSchemaTransform,
+  createJsonSchemaTransformObject,
   serializerCompiler,
   validatorCompiler,
 } from '@marcalexiei/fastify-type-provider-zod';
 import fastify from 'fastify';
-import { z } from 'zod';
+import { registry, z } from 'zod';
+
+const schemaRegistry = registry<ZodOpenApiSchemaMetadata>();
 
 const USER_SCHEMA = z
   .object({
     id: z.number().int().positive(),
     name: z.string().describe('The name of the user'),
   })
-  .meta({
+  .register(schemaRegistry, {
     id: 'User', // <--- THIS MUST BE UNIQUE AMONG SCHEMAS
     description: 'User information',
   });
@@ -33,8 +38,8 @@ app.register(fastifySwagger, {
     },
     servers: [],
   },
-  transform: jsonSchemaTransform,
-  transformObject: jsonSchemaTransformObject,
+  transform: createJsonSchemaTransform({ schemaRegistry }),
+  transformObject: createJsonSchemaTransformObject({ schemaRegistry }),
 });
 
 app.register(fastifySwaggerUI, {
