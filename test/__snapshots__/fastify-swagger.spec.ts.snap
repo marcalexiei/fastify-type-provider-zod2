@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`transformer > description and examples fields > should populate description and examples 3.0 1`] = `
+exports[`transformer > description and examples fields with custom schema registry > should populate description and examples 3.0 1`] = `
 {
   "components": {
     "schemas": {
@@ -105,7 +105,7 @@ exports[`transformer > description and examples fields > should populate descrip
 }
 `;
 
-exports[`transformer > description and examples fields > should populate description and examples 3.1 1`] = `
+exports[`transformer > description and examples fields with custom schema registry > should populate description and examples 3.1 1`] = `
 {
   "components": {
     "schemas": {

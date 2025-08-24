@@ -3,7 +3,10 @@ import fastifySwaggerUI from '@fastify/swagger-ui';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
-import type { ZodTypeProvider } from '../src/index.ts';
+import type {
+  ZodOpenApiSchemaMetadata,
+  ZodTypeProvider,
+} from '../src/index.ts';
 import {
   createJsonSchemaTransform,
   createJsonSchemaTransformObject,
@@ -744,15 +747,23 @@ describe('transformer', () => {
     );
   });
 
-  describe('description and examples fields', () => {
-    const UserIdSchema = z.string().optional().default('J1').meta({
-      description: 'User ID',
-      example: 'U234',
-    });
+  describe('description and examples fields with custom schema registry', () => {
+    const schemaRegistry = z.registry<ZodOpenApiSchemaMetadata>();
+
+    const UserIdSchema = z
+      .string()
+      .optional()
+      .default('J1')
+      .register(schemaRegistry, {
+        id: 'UserId',
+        description: 'User ID',
+        example: 'U234',
+      });
 
     const UserSchema = z
       .strictObject({ name: z.string().optional().default('Unknown') })
-      .meta({
+      .register(schemaRegistry, {
+        id: 'User',
         description: 'User',
         example: { name: 'Someone' },
       });
@@ -761,11 +772,6 @@ describe('transformer', () => {
       const app = Fastify();
       app.setValidatorCompiler(validatorCompiler);
       app.setSerializerCompiler(serializerCompiler);
-
-      const schemaRegistry = z.registry<{ id: string }>();
-
-      schemaRegistry.add(UserIdSchema, { id: 'UserId' });
-      schemaRegistry.add(UserSchema, { id: 'User' });
 
       await app.register(fastifySwagger, {
         openapi: {
@@ -821,11 +827,6 @@ describe('transformer', () => {
       const app = Fastify();
       app.setValidatorCompiler(validatorCompiler);
       app.setSerializerCompiler(serializerCompiler);
-
-      const schemaRegistry = z.registry<{ id: string }>();
-
-      schemaRegistry.add(UserIdSchema, { id: 'UserId' });
-      schemaRegistry.add(UserSchema, { id: 'User' });
 
       await app.register(fastifySwagger, {
         openapi: {

@@ -4,7 +4,6 @@ import {
   convertSchemaToOpenAPISchemaVersion,
   type OpenAPISchemaVersion,
 } from './openapi.ts';
-import type { ZodOpenApiMetadata } from './zod-meta.ts';
 
 const getSchemaId = (id: string, io: 'input' | 'output') => {
   return io === 'input' ? `${id}Input` : id;
@@ -28,9 +27,25 @@ const getOverride = (
     jsonSchema: JSONSchema.BaseSchema;
   },
   io: 'input' | 'output',
+  registry: $ZodRegistry,
 ) => {
-  // @ts-expect-error can't find a way to access meta of a schema
-  const meta = ctx.zodSchema.meta() as ZodOpenApiMetadata;
+  // Extract metadata from the specified registry.
+  // The `.meta()` method adds the element to the global registry.
+  // Note: If a custom registry is used, any properties registered via `.meta()`
+  // will be lost when `.register()` is called.
+  let meta = registry.get(ctx.zodSchema) as Record<string, unknown>;
+
+  // You can still inlining metadata in the schema that are not included
+  // in the registry, 
+  // e.g., a query param
+  if (!meta) {
+    // @ts-expect-error
+    const schemaMeta = ctx.zodSchema.meta() as Record<string, unknown>;
+    if (schemaMeta) {
+      meta = schemaMeta;
+    }
+  }
+
   if (meta) {
     if (typeof meta.description === 'string') {
       ctx.jsonSchema.description = meta.description;
@@ -117,7 +132,7 @@ export const zodSchemaToJson: (
      */
     uri: () => '__SCHEMA__PLACEHOLDER__',
 
-    override: (ctx) => getOverride(ctx, io),
+    override: (ctx) => getOverride(ctx, io, registry),
   });
 
   /**
@@ -151,7 +166,7 @@ export const zodRegistryToJson: (
     cycles: 'ref',
     reused: 'inline',
     uri: (id) => getReferenceUri(id, io),
-    override: (ctx) => getOverride(ctx, io),
+    override: (ctx) => getOverride(ctx, io, registry),
   }).schemas;
 
   const jsonSchemas: Record<string, JSONSchema.BaseSchema> = {};

@@ -1,6 +1,9 @@
 import type { JSONSchemaMeta } from 'zod/v4/core';
 
-export interface ZodOpenApiMetadata extends JSONSchemaMeta {
+/**
+ * Use this interface to type-check your data or define your custom schema
+ */
+export interface ZodOpenApiSchemaMetadata extends JSONSchemaMeta {
   /**
    * Use this to add examples to the generated openAPI spec
    */
@@ -8,5 +11,5 @@ export interface ZodOpenApiMetadata extends JSONSchemaMeta {
 }
 
 declare module 'zod/v4/core' {
-  interface GlobalMeta extends ZodOpenApiMetadata {}
+  interface GlobalMeta extends ZodOpenApiSchemaMetadata {}
 }

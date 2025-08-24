@@ -20,4 +20,4 @@ export {
   type ZodFastifySchemaValidationError,
 } from './errors.ts';
 
-export type { ZodOpenApiMetadata } from './zod-meta.ts';
+export type { ZodOpenApiSchemaMetadata } from './zod-meta.ts';
