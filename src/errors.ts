@@ -17,9 +17,10 @@ const ZodFastifySchemaValidationErrorSymbol: symbol = Symbol.for(
   'ZodFastifySchemaValidationError',
 );
 
-export type ZodFastifySchemaValidationError = FastifySchemaValidationError & {
+export interface ZodFastifySchemaValidationError
+  extends FastifySchemaValidationError {
   [ZodFastifySchemaValidationErrorSymbol]: true;
-};
+}
 
 const ResponseSerializationBase: FastifyErrorConstructor<
   {
@@ -87,33 +88,19 @@ export function hasZodFastifySchemaValidationErrors(
   );
 }
 
-function omit<T extends object, K extends keyof T>(
-  obj: T,
-  keys: ReadonlyArray<K>,
-): Omit<T, K> {
-  const result = {} as Omit<T, K>;
-  for (const key of Object.keys(obj) as Array<keyof T>) {
-    if (!keys.includes(key as K)) {
-      // @ts-expect-error
-      result[key] = obj[key];
-    }
-  }
-  return result;
-}
-
 export function createValidationError(
   error: $ZodError,
 ): Array<ZodFastifySchemaValidationError> {
   return error.issues.map((issue) => {
+    const { code, path, message, ...params } = issue;
+
     return {
       [ZodFastifySchemaValidationErrorSymbol]: true,
-      keyword: issue.code,
-      instancePath: `/${issue.path.join('/')}`,
-      schemaPath: `#/${issue.path.join('/')}/${issue.code}`,
-      message: issue.message,
-      params: {
-        ...omit(issue, ['path', 'code', 'message']),
-      },
+      keyword: code,
+      instancePath: `/${path.join('/')}`,
+      schemaPath: `#/${path.join('/')}/${issue.code}`,
+      message,
+      params,
     };
   });
 }
