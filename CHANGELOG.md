@@ -1,5 +1,13 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.2.1
+
+### Patch Changes
+
+- [`d306d4c`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/d306d4c4f1666bd9ab5d30f0445d75e6550609d6) Thanks [@marcalexiei](https://github.com/marcalexiei)! - fix(openapi): handle metadata consistently across global and custom schema registries
+
+- [`8676dcc`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/8676dcc24dcc807787d606959fb85d0ab779885a) Thanks [@marcalexiei](https://github.com/marcalexiei)! - docs(examples): refine examples with schema refs
+
 ## 1.2.0
 
 ### Minor Changes
