@@ -24,7 +24,7 @@ import {
 } from './errors.ts';
 import { getOpenAPISchemaVersion } from './openapi.ts';
 import {
-  removeUnusedRefs,
+  removeUnusedSchemaRefs,
   zodRegistryToJson,
   zodSchemaToJson,
 } from './zod-to-json.ts';
@@ -176,7 +176,7 @@ export const createJsonSchemaTransformObject = (
       }
     }
 
-    return removeUnusedRefs({
+    return removeUnusedSchemaRefs({
       ...documentObject.openapiObject,
       components: {
         ...documentObject.openapiObject.components,
