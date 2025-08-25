@@ -1,5 +1,13 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.2.2
+
+### Patch Changes
+
+- [#39](https://github.com/marcalexiei/fastify-type-provider-zod/pull/39) [`11681ac`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/11681acd7e99412d1ae6550ba2a08e28ae59c94b) Thanks [@marcalexiei](https://github.com/marcalexiei)! - fix(openapi): prune only unused schemas from `components.schemas`
+
+- [`77a9ff2`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/77a9ff2998ff3a2b319708f11c953a7424c2b109) Thanks [@marcalexiei](https://github.com/marcalexiei)! - refactor(errors): use destructuring instead of `omit` helper
+
 ## 1.2.1
 
 ### Patch Changes
