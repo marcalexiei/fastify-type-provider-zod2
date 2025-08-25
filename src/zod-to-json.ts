@@ -195,7 +195,7 @@ function collectRefs(obj: unknown, refs = new Set<string>()): Set<string> {
   return refs;
 }
 
-export function removeUnusedRefs(
+export function removeUnusedSchemaRefs(
   spec: JSONSchema.BaseSchema,
 ): JSONSchema.BaseSchema {
   const usedRefs = collectRefs(spec.paths);
@@ -206,7 +206,14 @@ export function removeUnusedRefs(
     return spec;
   }
 
-  for (const section of Object.keys(components)) {
+  /**
+   * Process only references inside `schemas` property since the main purpose of this function is
+   * to remove unreferenced Input and Output schemas used by zod
+   * @see https://github.com/marcalexiei/fastify-type-provider-zod/issues/38
+   */
+  const keysToProcess = ['schemas'];
+
+  for (const section of keysToProcess) {
     const items = components[section] as Record<string, unknown>;
     if (!items) {
       continue;

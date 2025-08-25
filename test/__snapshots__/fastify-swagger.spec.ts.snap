@@ -1041,3 +1041,84 @@ exports[`transformer > should not generate ref 1`] = `
   "servers": [],
 }
 `;
+
+exports[`transformer > should not remove securitySchemes from the final openAPI object 1`] = `
+{
+  "components": {
+    "schemas": {
+      "User": {
+        "additionalProperties": false,
+        "properties": {
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+          },
+          "id": {
+            "default": "1",
+            "type": "string",
+          },
+        },
+        "required": [
+          "id",
+          "createdAt",
+        ],
+        "type": "object",
+      },
+      "UserInput": {
+        "properties": {
+          "createdAt": {},
+          "id": {
+            "default": "1",
+            "type": "string",
+          },
+        },
+        "required": [
+          "createdAt",
+        ],
+        "type": "object",
+      },
+    },
+    "securitySchemes": {
+      "authorization": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http",
+      },
+    },
+  },
+  "info": {
+    "description": "Sample backend service",
+    "title": "SampleApi",
+    "version": "1.0.0",
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInput",
+              },
+            },
+          },
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User",
+                },
+              },
+            },
+            "description": "Default Response",
+          },
+        },
+      },
+    },
+  },
+  "servers": [],
+}
+`;
