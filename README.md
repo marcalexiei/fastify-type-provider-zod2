@@ -5,7 +5,7 @@
 [![npm version][npmVersionBadge]][npmVersionURL]
 [![issues][issuesBadge]][issuesURL]
 
-[CIBadge]: https://img.shields.io/github/actions/workflow/status/marcalexiei/fastify-type-provider-zod/CI.yml?style=for-the-badge&logo=github&event=push
+[CIBadge]: https://img.shields.io/github/actions/workflow/status/marcalexiei/fastify-type-provider-zod/CI.yml?style=for-the-badge&logo=github&event=push&label=CI
 [CIURL]: https://github.com/marcalexiei/fastify-type-provider-zod/actions/workflows/CI.yml
 [CheckerBadge]: https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=for-the-badge&logo=biome
 [CheckerURL]: https://biomejs.dev
