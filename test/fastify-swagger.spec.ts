@@ -24,7 +24,7 @@ describe('transformer', () => {
     app.setValidatorCompiler(validatorCompiler);
     app.setSerializerCompiler(serializerCompiler);
 
-    app.register(fastifySwagger, {
+    await app.register(fastifySwagger, {
       openapi: {
         info: {
           title: 'SampleApi',
@@ -36,7 +36,7 @@ describe('transformer', () => {
       transform: jsonSchemaTransform,
     });
 
-    app.register(fastifySwaggerUI, {
+    await app.register(fastifySwaggerUI, {
       routePrefix: '/documentation',
     });
 
@@ -52,55 +52,53 @@ describe('transformer', () => {
       scopes: z.tuple([z.literal('read'), z.literal('write'), z.null()]),
     });
 
-    app.after(() => {
-      app
-        .withTypeProvider<ZodTypeProvider>()
-        .route({
-          method: 'POST',
-          url: '/login',
-          schema: {
-            description: 'login route',
-            summary: 'login your account',
-            consumes: ['application/json'],
-            deprecated: false,
-            hide: false,
-            tags: ['auth'],
-            externalDocs: {
-              url: 'https://google.com',
-              description: 'check google',
-            },
-            body: LOGIN_SCHEMA,
-            response: {
-              200: z.string(),
-              401: UNAUTHORIZED_SCHEMA,
-            },
+    app
+      .withTypeProvider<ZodTypeProvider>()
+      .route({
+        method: 'POST',
+        url: '/login',
+        schema: {
+          description: 'login route',
+          summary: 'login your account',
+          consumes: ['application/json'],
+          deprecated: false,
+          hide: false,
+          tags: ['auth'],
+          externalDocs: {
+            url: 'https://google.com',
+            description: 'check google',
           },
-          handler: (_req, res) => {
-            res.send('ok');
+          body: LOGIN_SCHEMA,
+          response: {
+            200: z.string(),
+            401: UNAUTHORIZED_SCHEMA,
           },
-        })
-        .route({
-          method: 'POST',
-          url: '/no-schema',
-          schema: undefined,
-          handler: (_req, res) => {
-            res.send('ok');
+        },
+        handler: (_req, res) => {
+          res.send('ok');
+        },
+      })
+      .route({
+        method: 'POST',
+        url: '/no-schema',
+        schema: undefined,
+        handler: (_req, res) => {
+          res.send('ok');
+        },
+      })
+      .route({
+        method: 'DELETE',
+        url: '/delete',
+        schema: {
+          description: 'delete route',
+          response: {
+            204: z.undefined().describe('Empty response'),
           },
-        })
-        .route({
-          method: 'DELETE',
-          url: '/delete',
-          schema: {
-            description: 'delete route',
-            response: {
-              204: z.undefined().describe('Empty response'),
-            },
-          },
-          handler: (_req, res) => {
-            res.status(204).send();
-          },
-        });
-    });
+        },
+        handler: (_req, res) => {
+          res.status(204).send();
+        },
+      });
 
     await app.ready();
 
@@ -350,9 +348,7 @@ describe('transformer', () => {
     app.setValidatorCompiler(validatorCompiler);
     app.setSerializerCompiler(serializerCompiler);
 
-    const TOKEN_SCHEMA = z.string().length(12);
-
-    z.globalRegistry.add(TOKEN_SCHEMA, {
+    const TOKEN_SCHEMA = z.string().length(12).meta({
       id: 'Token',
       description: 'Token description',
     });

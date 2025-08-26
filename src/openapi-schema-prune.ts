@@ -20,7 +20,7 @@ function collectRefs(
   }
 
   for (const key of Object.keys(schema)) {
-    if (skipDefs && (key === 'definitions' || key === 'components')) {
+    if (skipDefs && key === 'components') {
       // don't walk into definitions/components directly
       continue;
     }
@@ -40,8 +40,8 @@ function collectRefs(
   return refs;
 }
 
-const REF_MATCH_WITH_GROUP = /^#\/(definitions|components\/schemas)\/(.+)$/;
-const REF_MATCH_START = /^#\/(definitions|components\/schemas)\//;
+const REF_MATCH_WITH_GROUP = /^#\/(components\/schemas)\/(.+)$/;
+const REF_MATCH_START = /^#\/components\/schemas\//;
 
 function resolveTransitiveRefs(
   schema: Record<string, unknown>,
@@ -59,12 +59,9 @@ function resolveTransitiveRefs(
         continue;
       }
 
-      const [, section, name] = match;
-      const container =
-        section === 'definitions'
-          ? schema.definitions
-          : // @ts-expect-error
-            schema.components?.schemas;
+      const [, , name] = match;
+      // @ts-expect-error
+      const container = schema.components?.schemas;
 
       const def = container?.[name];
       if (!def) {
@@ -87,7 +84,7 @@ function resolveTransitiveRefs(
 
 export function openAPISchemaPrune(
   schema: JSONSchema.JSONSchema,
-): Record<string, unknown> {
+): JSONSchema.JSONSchema {
   const directRefs = collectRefs(schema); // this skips definitions
   const usedRefs = resolveTransitiveRefs(schema, directRefs);
 
@@ -112,24 +109,26 @@ export function openAPISchemaPrune(
 }
 
 // const schema = {
-//   type: "object",
+//   type: 'object',
 //   properties: {
-//     // node: {}
-//     node: { $ref: "#/definitions/Node" }
+//     node: {}
+//     // node: { $ref: '#/components/schemas/Node' },
 //   },
-//   definitions: {
-//     Node: {
-//       type: "object",
-//       properties: {
-//         value: { type: "string" },
-//         children: {
-//           type: "array",
-//           items: { $ref: "#/definitions/Node" } // self-ref only
-//         }
-//       }
+//   components: {
+//     schemas: {
+//       Node: {
+//         type: 'object',
+//         properties: {
+//           value: { type: 'string' },
+//           children: {
+//             type: 'array',
+//             items: { $ref: '#/components/schemas/Node' }, // self-ref only
+//           },
+//         },
+//       },
+//       Unused: { type: 'number' },
 //     },
-//     Unused: { type: "number" }
-//   }
+//   },
 // };
 
 // console.log(openAPISchemaPrune(schema));

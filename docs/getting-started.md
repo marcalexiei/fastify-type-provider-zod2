@@ -2,12 +2,12 @@
 
 ## Prerequisites
 
-This project requires `fastify^5` and `zod`:
+This project requires the following peer dependencies:
 
-```text
-"fastify": "^5.0.0",
-"zod": "^3.25.67 || ^4"
-```
+| Peer dependency | Version range |
+| --------------- | :-----------: |
+| fastify         | ^5.0.0        |
+| zod.            | ^4.1.4        |
 
 ## Installation
 
