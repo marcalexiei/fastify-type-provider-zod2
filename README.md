@@ -9,7 +9,7 @@
 [CIURL]: https://github.com/marcalexiei/fastify-type-provider-zod/actions/workflows/CI.yml
 [CheckerBadge]: https://img.shields.io/badge/Checked_with-Biome-60a5fa?style=for-the-badge&logo=biome
 [CheckerURL]: https://biomejs.dev
-[npmVersionBadge]: https://img.shields.io/npm/v/@marcalexiei/fastify-type-provider-zod.svg?style=for-the-badge
+[npmVersionBadge]: https://img.shields.io/npm/v/@marcalexiei/fastify-type-provider-zod.svg?style=for-the-badge&logo=npm
 [npmVersionURL]: https://www.npmjs.com/package/@marcalexiei/fastify-type-provider-zod
 [issuesBadge]: https://img.shields.io/github/issues/marcalexiei/fastify-type-provider-zod.svg?style=for-the-badge
 [issuesURL]: https://github.com/marcalexiei/fastify-type-provider-zod/issues
