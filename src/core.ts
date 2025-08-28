@@ -23,11 +23,8 @@ import {
   ResponseSerializationError,
 } from './errors.ts';
 import { getOpenAPISchemaVersion } from './openapi.ts';
-import {
-  removeUnusedSchemaRefs,
-  zodRegistryToJson,
-  zodSchemaToJson,
-} from './zod-to-json.ts';
+import { openAPISchemaPrune } from './openapi-schema-prune.ts';
+import { zodRegistryToJson, zodSchemaToJson } from './zod-to-json.ts';
 
 const defaultSkipList = [
   '/documentation/',
@@ -168,6 +165,7 @@ export const createJsonSchemaTransformObject = (
     );
 
     for (const key in outputSchemas) {
+      /* @todo add test */
       /* v8 ignore next 5 */
       if (inputSchemas[key]) {
         throw new Error(
@@ -176,7 +174,7 @@ export const createJsonSchemaTransformObject = (
       }
     }
 
-    return removeUnusedSchemaRefs({
+    const assembledDocument = {
       ...documentObject.openapiObject,
       components: {
         ...documentObject.openapiObject.components,
@@ -186,7 +184,13 @@ export const createJsonSchemaTransformObject = (
           ...outputSchemas,
         },
       },
-    }) as ReturnType<SwaggerTransformObject>;
+    };
+
+    const cleanedDocument = openAPISchemaPrune(
+      assembledDocument,
+    ) as ReturnType<SwaggerTransformObject>;
+
+    return cleanedDocument;
   };
 };
 
