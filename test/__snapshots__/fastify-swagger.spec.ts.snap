@@ -245,6 +245,8 @@ exports[`transformer > generates types for fastify-swagger correctly 1`] = `
               "schema": {
                 "properties": {
                   "code": {
+                    "exclusiveMaximum": true,
+                    "exclusiveMinimum": true,
                     "maximum": 10000,
                     "minimum": 1,
                     "type": "number",
@@ -302,8 +304,7 @@ exports[`transformer > generates types for fastify-swagger correctly 1`] = `
                     },
                     "scopes": {
                       "items": {
-                        "nullable": true,
-                        "oneOf": [
+                        "anyOf": [
                           {
                             "enum": [
                               "read",
@@ -314,6 +315,13 @@ exports[`transformer > generates types for fastify-swagger correctly 1`] = `
                             "enum": [
                               "write",
                             ],
+                            "type": "string",
+                          },
+                          {
+                            "enum": [
+                              null,
+                            ],
+                            "nullable": true,
                             "type": "string",
                           },
                         ],
@@ -488,6 +496,13 @@ exports[`transformer > null type > should replace \`anyOf\` when it contains 2 e
                 "schema": {
                   "anyOf": [
                     {
+                      "enum": [
+                        null,
+                      ],
+                      "nullable": true,
+                      "type": "string",
+                    },
+                    {
                       "items": {
                         "type": "string",
                       },
@@ -500,7 +515,6 @@ exports[`transformer > null type > should replace \`anyOf\` when it contains 2 e
                       "type": "string",
                     },
                   ],
-                  "nullable": true,
                 },
               },
             },
@@ -533,11 +547,21 @@ exports[`transformer > null type > should replace \`anyOf\` with \`"allOf": [...
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "type": "string",
-                  },
-                  "nullable": true,
-                  "type": "array",
+                  "anyOf": [
+                    {
+                      "enum": [
+                        null,
+                      ],
+                      "nullable": true,
+                      "type": "string",
+                    },
+                    {
+                      "items": {
+                        "type": "string",
+                      },
+                      "type": "array",
+                    },
+                  ],
                 },
               },
             },

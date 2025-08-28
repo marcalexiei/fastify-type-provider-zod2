@@ -20,141 +20,18 @@ export const getOpenAPISchemaVersion = (documentObject: {
   throw new Error('Unsupported OpenAPI document object');
 };
 
-export const convertSchemaToOpenAPISchemaVersion = (
+export const removeJSONSchemaPropertiesNotUsedByOpenAPI = (
   jsonSchema: JSONSchema.BaseSchema,
   options: { openAPISchemaVersion: OpenAPISchemaVersion },
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: life is bitter :(
 ): JSONSchema.BaseSchema => {
-  const { openAPISchemaVersion } = options;
+  // keeping this around just in case of additional customization based on open api version
+  const { openAPISchemaVersion: _ } = options;
 
   const clone = { ...jsonSchema };
 
-  if (openAPISchemaVersion === '3.1') {
-    delete clone.$id;
-    delete clone.$schema;
-
-    return clone;
-  }
-
-  // if (clone.type === 'null') {
-  //   clone.nullable = true;
-  //   delete clone.type;
-  //   clone.enum = [null];
-  // }
-
-  if (clone.oneOf?.some((s) => s.type === 'null')) {
-    const notNullableItems = clone.oneOf.filter((s) => s.type !== 'null');
-    clone.nullable = true;
-    clone.oneOf = notNullableItems;
-  }
-
-  if (clone.anyOf?.some((s) => s.type === 'null')) {
-    const notNullableItems = clone.anyOf.filter((s) => s.type !== 'null');
-    /**
-     * Convert any `anyOf` schemas with two elements, one of which is `"type": "null"`,
-     * into a single schema with nullable: true."
-     * @see https://github.com/turkerdev/fastify-type-provider-zod/issues/192
-     * @see https://stackoverflow.com/a/48114924
-     */
-    if (clone.anyOf.length === 2) {
-      Object.assign(
-        clone,
-        // If length is 2 it means there is only one element besides `null`
-        notNullableItems[0],
-        { nullable: true },
-      );
-      delete clone.anyOf;
-    } else {
-      clone.nullable = true;
-      // `nullable` replaces the `type: null` so replace anyOf with all other items
-      clone.anyOf = notNullableItems;
-    }
-  }
-
-  if (Array.isArray(clone.prefixItems)) {
-    const tuple = clone.prefixItems;
-
-    clone.minItems ??= tuple.length;
-    clone.maxItems ??= tuple.length;
-
-    clone.items = {
-      oneOf: tuple.map((it) =>
-        convertSchemaToOpenAPISchemaVersion(it as JSONSchema.BaseSchema, {
-          openAPISchemaVersion,
-        }),
-      ),
-    };
-
-    delete clone.prefixItems;
-  }
-
-  if ('const' in clone && clone.const !== undefined) {
-    clone.enum = [clone.const];
-    delete clone.const;
-  }
-
-  if (typeof clone.exclusiveMinimum === 'number') {
-    clone.minimum = clone.exclusiveMinimum;
-    delete clone.exclusiveMinimum;
-  }
-  if (typeof clone.exclusiveMaximum === 'number') {
-    clone.maximum = clone.exclusiveMaximum;
-    delete clone.exclusiveMaximum;
-  }
-
-  for (const key of [
-    'id',
-    '$schema',
-    '$id',
-    'unevaluatedProperties',
-    'dependentSchemas',
-    'patternProperties',
-    'propertyNames',
-    'contentEncoding',
-    'contentMediaType',
-  ]) {
-    delete clone[key];
-  }
-
-  const recursive = (v: JSONSchema.BaseSchema): unknown => {
-    if (Array.isArray(v)) {
-      return v.map((it) =>
-        convertSchemaToOpenAPISchemaVersion(it, {
-          openAPISchemaVersion,
-        }),
-      );
-    }
-    return convertSchemaToOpenAPISchemaVersion(v, { openAPISchemaVersion });
-  };
-
-  if (clone.properties) {
-    for (const [k, v] of Object.entries(clone.properties)) {
-      clone.properties[k] = convertSchemaToOpenAPISchemaVersion(
-        v as JSONSchema.BaseSchema,
-        { openAPISchemaVersion },
-      );
-    }
-  }
-
-  if (clone.items && !Array.isArray(clone.items)) {
-    // @ts-expect-error
-    clone.items = recursive(clone.items) as JSONSchema.ObjectSchema;
-  }
-
-  for (const key of [
-    'allOf',
-    'anyOf',
-    'oneOf',
-    'not',
-    'then',
-    'else',
-    'if',
-    'contains',
-  ]) {
-    if (clone[key]) {
-      clone[key] = recursive(clone[key] as JSONSchema.BaseSchema);
-    }
-  }
+  delete clone.$schema;
+  delete clone.$id;
+  delete clone.id;
 
   return clone;
 };

@@ -1,8 +1,8 @@
 import type { $ZodDate, $ZodUndefined, JSONSchema } from 'zod/v4/core';
 import { $ZodRegistry, $ZodType, toJSONSchema } from 'zod/v4/core';
 import {
-  convertSchemaToOpenAPISchemaVersion,
   type OpenAPISchemaVersion,
+  removeJSONSchemaPropertiesNotUsedByOpenAPI,
 } from './openapi.ts';
 
 const getSchemaId = (id: string, io: 'input' | 'output') => {
@@ -69,7 +69,8 @@ const getOverride = (
   }
 };
 
-const zodJSONSchemaTarget = 'draft-2020-12' as const;
+const getZodJSONSchemaTarget = (version: OpenAPISchemaVersion) =>
+  version === '3.0' ? 'openapi-3.0' : 'draft-2020-12';
 
 export const zodSchemaToJson: (
   zodSchema: $ZodType,
@@ -109,7 +110,7 @@ export const zodSchemaToJson: (
   const {
     schemas: { [tempID]: result },
   } = toJSONSchema(tempRegistry, {
-    target: zodJSONSchemaTarget,
+    target: getZodJSONSchemaTarget(openAPISchemaVersion),
     metadata: registry,
     io,
     unrepresentable: 'any',
@@ -134,17 +135,22 @@ export const zodSchemaToJson: (
     override: (ctx) => getOverride(ctx, io, registry),
   });
 
+  const matchToReplace =
+    openAPISchemaVersion === '3.1'
+      ? /"__SCHEMA__PLACEHOLDER__#\/\$defs\/(.+?)"/g
+      : /"__SCHEMA__PLACEHOLDER__#\/definitions\/(.+?)"/g;
+
   /**
    * Replace the previous generated placeholders with the final `$ref` value
    */
   const jsonSchemaReplaceRef = JSON.stringify(result).replaceAll(
-    /"__SCHEMA__PLACEHOLDER__#\/\$defs\/(.+?)"/g,
+    matchToReplace,
     (_, id) => `"${getReferenceUri(id, io)}"`,
   );
 
   const jsonSchemaWithRef = JSON.parse(jsonSchemaReplaceRef);
 
-  return convertSchemaToOpenAPISchemaVersion(jsonSchemaWithRef, {
+  return removeJSONSchemaPropertiesNotUsedByOpenAPI(jsonSchemaWithRef, {
     openAPISchemaVersion,
   });
 };
@@ -159,7 +165,7 @@ export const zodRegistryToJson: (
   openAPISchemaVersion,
 ) => {
   const result = toJSONSchema(registry, {
-    target: zodJSONSchemaTarget,
+    target: getZodJSONSchemaTarget(openAPISchemaVersion),
     io,
     unrepresentable: 'any',
     cycles: 'ref',
@@ -171,10 +177,10 @@ export const zodRegistryToJson: (
   const jsonSchemas: Record<string, JSONSchema.BaseSchema> = {};
 
   for (const id in result) {
-    jsonSchemas[getSchemaId(id, io)] = convertSchemaToOpenAPISchemaVersion(
-      result[id],
-      { openAPISchemaVersion },
-    );
+    jsonSchemas[getSchemaId(id, io)] =
+      removeJSONSchemaPropertiesNotUsedByOpenAPI(result[id], {
+        openAPISchemaVersion,
+      });
   }
 
   return jsonSchemas;
