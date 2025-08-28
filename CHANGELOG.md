@@ -1,5 +1,11 @@
 # @marcalexiei/fastify-type-provider-zod
 
+## 1.2.3
+
+### Patch Changes
+
+- [#42](https://github.com/marcalexiei/fastify-type-provider-zod/pull/42) [`a70297d`](https://github.com/marcalexiei/fastify-type-provider-zod/commit/a70297d3ae426155399fad02db242b350d82673c) Thanks [@marcalexiei](https://github.com/marcalexiei)! - refactor(openapi): improve prune algorithm
+
 ## 1.2.2
 
 ### Patch Changes
